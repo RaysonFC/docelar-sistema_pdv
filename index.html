@@ -19,14 +19,11 @@
   </div>
 </header>
 
-<!-- TABS — visíveis só no mobile via CSS -->
+<!-- TABS mobile -->
 <div class="tabs-mobile">
-  <button class="tab-btn ativo" id="tab-cardapio" onclick="mostrarTab('cardapio')">
-    🧁 Cardápio
-  </button>
+  <button class="tab-btn ativo" id="tab-cardapio" onclick="mostrarTab('cardapio')">🧁 Cardápio</button>
   <button class="tab-btn" id="tab-caixa" onclick="mostrarTab('caixa')">
-    🧾 Pedido
-    <span class="badge-tab" id="badge-tab">0</span>
+    🧾 Pedido <span class="badge-tab" id="badge-tab">0</span>
   </button>
 </div>
 
@@ -54,14 +51,54 @@
       🧾 Pedido atual <span id="badge-qtd" class="badge" style="display:none">0</span>
     </div>
     <div class="caixa-body">
+
       <div class="pedido-lista" id="pedido-lista">
         <div class="pedido-vazio">Nenhum item adicionado ainda...</div>
       </div>
+
       <hr class="divider">
+
+      <!-- RESUMO -->
       <div class="resumo">
-        <div class="resumo-linha"><span>Itens</span><span id="res-itens">0</span></div>
-        <div class="resumo-total"><span>Total</span><span id="res-total">R$ 0,00</span></div>
+        <div class="resumo-linha">
+          <span>Itens</span>
+          <span id="res-itens">0</span>
+        </div>
+
+        <!-- Subtotal + desconto (visível só quando há desconto) -->
+        <div class="resumo-linha" id="res-subtotal-linha" style="display:none">
+          <span>Subtotal</span>
+          <span id="res-subtotal">R$ 0,00</span>
+        </div>
+        <div class="resumo-linha desconto-linha" id="res-subtotal-linha" style="display:none">
+          <span>Desconto</span>
+          <span id="res-desconto" style="color:#c0392b; font-weight:800;">− R$ 0,00</span>
+        </div>
+
+        <div class="resumo-total">
+          <span>Total</span>
+          <span id="res-total">R$ 0,00</span>
+        </div>
       </div>
+
+      <!-- DESCONTO -->
+      <div class="desconto-section">
+        <div class="desconto-titulo">🏷️ Desconto</div>
+        <div class="desconto-row">
+          <div class="tipo-toggle">
+            <button class="btn-tipo ativo" id="btn-tipo-reais"   onclick="alterarTipoDesconto('reais')">R$</button>
+            <button class="btn-tipo"       id="btn-tipo-porcento" onclick="alterarTipoDesconto('porcento')">%</button>
+          </div>
+          <div class="desconto-input-wrap">
+            <span class="desconto-prefix" id="label-desconto">R$</span>
+            <input type="number" id="input-desconto" class="input-valor input-desconto"
+              placeholder="0" min="0" step="0.01" oninput="aplicarDesconto()">
+          </div>
+          <button class="btn-remover-desconto" onclick="removerDesconto()" title="Remover desconto">✕</button>
+        </div>
+      </div>
+
+      <!-- PAGAMENTO -->
       <div class="pagamento-section">
         <div class="pagamento-titulo">💳 Forma de pagamento</div>
         <div class="formas-grid">
@@ -78,6 +115,7 @@
         <button class="btn-finalizar" id="btn-finalizar" onclick="finalizarVenda()" disabled>Finalizar Venda</button>
         <button class="btn-limpar" onclick="limparPedido()">🗑️ Limpar pedido</button>
       </div>
+
     </div>
   </div>
 
@@ -101,64 +139,48 @@
 <script>
   const isMobile = () => window.innerWidth <= 768;
 
-  // ---- Controle das tabs mobile ----
   function mostrarTab(tab) {
     const cardapio = document.getElementById('secao-cardapio');
     const caixa    = document.getElementById('secao-caixa');
     const btnC     = document.getElementById('tab-cardapio');
     const btnP     = document.getElementById('tab-caixa');
-
     if (tab === 'cardapio') {
-      cardapio.classList.remove('oculto');
-      caixa.classList.add('oculto');
-      btnC.classList.add('ativo');
-      btnP.classList.remove('ativo');
+      cardapio.classList.remove('oculto'); caixa.classList.add('oculto');
+      btnC.classList.add('ativo');         btnP.classList.remove('ativo');
     } else {
-      caixa.classList.remove('oculto');
-      cardapio.classList.add('oculto');
-      btnP.classList.add('ativo');
-      btnC.classList.remove('ativo');
+      caixa.classList.remove('oculto');    cardapio.classList.add('oculto');
+      btnP.classList.add('ativo');         btnC.classList.remove('ativo');
     }
   }
 
-  // Garante visibilidade correta ao redimensionar
   function ajustarLayout() {
     const cardapio = document.getElementById('secao-cardapio');
     const caixa    = document.getElementById('secao-caixa');
     if (!isMobile()) {
-      // Desktop: os dois sempre visíveis
       cardapio.classList.remove('oculto');
       caixa.classList.remove('oculto');
     } else {
-      // Mobile: respeita tab ativa
       const tabAtiva = document.querySelector('.tab-btn.ativo')?.id;
-      if (tabAtiva === 'tab-caixa') {
-        mostrarTab('caixa');
-      } else {
-        mostrarTab('cardapio');
-      }
+      tabAtiva === 'tab-caixa' ? mostrarTab('caixa') : mostrarTab('cardapio');
     }
   }
 
   window.addEventListener('resize', ajustarLayout);
 
-  // ---- Badge da tab de pedido ----
   function atualizarBadgeTab() {
     const total = pedido.reduce((s, i) => s + i.qtd, 0);
     const badge = document.getElementById('badge-tab');
     if (!badge) return;
-    badge.textContent = total;
+    badge.textContent  = total;
     badge.style.display = total > 0 ? 'inline' : 'none';
   }
 
-  // Sobrescreve renderPedido para também atualizar badge da tab
   const _origRenderPedido = window.renderPedido;
   window.renderPedido = function () {
     _origRenderPedido();
     atualizarBadgeTab();
   };
 
-  // ---- Init ----
   ajustarLayout();
   atualizarBadgeTab();
 </script>
