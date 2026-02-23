@@ -552,3 +552,116 @@ header span {
     font-weight: 800 !important;
   }
 }
+
+/* ========================
+   DESCONTO
+   ======================== */
+.desconto-section {
+  margin-top: 14px;
+  padding: 14px;
+  background: var(--creme2);
+  border-radius: 14px;
+  border: 2px dashed rgba(244,167,185,0.5);
+}
+
+.desconto-titulo {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--marrom);
+  margin-bottom: 10px;
+}
+
+.desconto-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tipo-toggle {
+  display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid rgba(244,167,185,0.5);
+  flex-shrink: 0;
+}
+
+.btn-tipo {
+  padding: 7px 10px;
+  border: none;
+  background: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--marrom-medio);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-tipo.ativo {
+  background: var(--marrom);
+  color: var(--rosa);
+}
+
+.desconto-input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 2px solid rgba(244,167,185,0.5);
+  border-radius: 10px;
+  padding: 0 10px;
+  gap: 6px;
+  transition: border-color 0.2s;
+}
+
+.desconto-input-wrap:focus-within { border-color: var(--rosa-escuro); }
+
+.desconto-prefix {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--marrom-medio);
+  flex-shrink: 0;
+}
+
+.input-desconto {
+  border: none !important;
+  background: transparent !important;
+  padding: 8px 0 !important;
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+.btn-remover-desconto {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(192,57,43,0.12);
+  color: #c0392b;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.btn-remover-desconto:hover { background: #c0392b; color: white; }
+
+.desconto-linha { color: #c0392b; }
+
+/* Resumo com desconto */
+.resumo-subtotal {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: var(--marrom-medio);
+  margin-bottom: 4px;
+}
+
+.resumo-desconto {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #c0392b;
+  margin-bottom: 6px;
+}
