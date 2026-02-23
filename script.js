@@ -52,7 +52,7 @@ function renderCardapio() {
 function renderGrupo(gridId, itens) {
   const grid = document.getElementById(gridId);
   grid.innerHTML = itens.map(item => `
-    <button class="item-btn" onclick='adicionarItem(${JSON.stringify(item)})'>
+    <button class="item-btn" onclick='adicionarItem(${JSON.stringify(item)}, this)'>
       <div class="item-nome">${item.nome}</div>
       <div class="item-preco">R$ ${item.preco.toFixed(2).replace('.', ',')}</div>
     </button>
@@ -62,7 +62,7 @@ function renderGrupo(gridId, itens) {
 // =====================
 //  PEDIDO
 // =====================
-function adicionarItem(item) {
+function adicionarItem(item, btn) {
   const existente = pedido.find(p => p.nome === item.nome);
   if (existente) {
     existente.qtd++;
@@ -71,6 +71,32 @@ function adicionarItem(item) {
   }
   salvarEstado();
   renderPedido();
+
+  // Feedback visual apenas no mobile
+  if (btn && window.innerWidth <= 768) {
+    feedbackAdicionado(btn);
+  }
+}
+
+function feedbackAdicionado(btn) {
+  if (btn.dataset.feedback) return; // evita duplo clique
+  btn.dataset.feedback = '1';
+
+  const nomeEl  = btn.querySelector('.item-nome');
+  const precoEl = btn.querySelector('.item-preco');
+  const textoOriginal = nomeEl.textContent;
+
+  // Guarda estado original
+  btn.classList.add('item-adicionado');
+  nomeEl.textContent  = '✓ Adicionado!';
+  precoEl.style.visibility = 'hidden';
+
+  setTimeout(() => {
+    btn.classList.remove('item-adicionado');
+    nomeEl.textContent  = textoOriginal;
+    precoEl.style.visibility = 'visible';
+    delete btn.dataset.feedback;
+  }, 1000);
 }
 
 function alterarQtd(idx, delta) {
