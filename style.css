@@ -20,6 +20,9 @@ body {
     radial-gradient(circle at 90% 80%, rgba(224,122,149,0.2) 0%, transparent 50%);
 }
 
+/* ========================
+   HEADER
+   ======================== */
 header {
   background: linear-gradient(135deg, var(--marrom) 0%, var(--marrom-medio) 100%);
   padding: 18px 32px;
@@ -43,6 +46,25 @@ header span {
   opacity: 0.8;
 }
 
+.nav-link {
+  color: var(--rosa);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.nav-link:hover { opacity: 1; }
+
+/* ========================
+   TABS — ocultas no desktop
+   ======================== */
+.tabs-mobile { display: none; }
+
+/* ========================
+   LAYOUT DESKTOP
+   ======================== */
 .container {
   display: grid;
   grid-template-columns: 1fr 380px;
@@ -52,6 +74,9 @@ header span {
   margin: 0 auto;
 }
 
+/* ========================
+   CARDÁPIO
+   ======================== */
 .cardapio { display: flex; flex-direction: column; gap: 20px; }
 
 .categoria-titulo {
@@ -93,6 +118,7 @@ header span {
   text-align: center;
   transition: all 0.2s ease;
   font-family: 'Nunito', sans-serif;
+  width: 100%;
 }
 
 .item-btn:hover {
@@ -101,7 +127,6 @@ header span {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px var(--sombra);
 }
-
 .item-btn:active { transform: translateY(0); }
 
 .item-nome {
@@ -122,6 +147,9 @@ header span {
   border-radius: 20px;
 }
 
+/* ========================
+   CAIXA
+   ======================== */
 .caixa {
   background: var(--branco);
   border-radius: 20px;
@@ -179,13 +207,16 @@ header span {
   animation: fadeIn 0.2s ease;
 }
 
-@keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
 
-.pedido-item-info { flex: 1; }
+.pedido-item-info { flex: 1; min-width: 0; }
 .pedido-item-nome { font-weight: 700; font-size: 0.82rem; color: var(--marrom); }
 .pedido-item-sub { font-size: 0.75rem; color: var(--marrom-medio); }
 
-.qtd-controls { display: flex; align-items: center; gap: 6px; }
+.qtd-controls { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 
 .qtd-btn {
   width: 26px; height: 26px;
@@ -198,11 +229,11 @@ header span {
   transition: all 0.15s;
 }
 .qtd-btn.menos { background: var(--rosa); color: var(--marrom); }
-.qtd-btn.mais { background: var(--marrom); color: var(--rosa); }
+.qtd-btn.mais  { background: var(--marrom); color: var(--rosa); }
 .qtd-btn:hover { transform: scale(1.15); }
 
 .qtd-num { font-weight: 800; font-size: 0.9rem; color: var(--marrom); min-width: 20px; text-align: center; }
-.item-total { font-weight: 800; font-size: 0.85rem; color: var(--marrom); min-width: 58px; text-align: right; }
+.item-total { font-weight: 800; font-size: 0.85rem; color: var(--marrom); min-width: 58px; text-align: right; flex-shrink: 0; }
 
 .divider { border: none; border-top: 2px dashed rgba(244,167,185,0.5); margin: 12px 0; }
 
@@ -242,13 +273,11 @@ header span {
   transition: all 0.2s;
   text-align: center;
 }
-
 .forma-btn.ativo {
   border-color: var(--marrom);
   background: var(--marrom);
   color: var(--rosa);
 }
-
 .forma-btn:hover:not(.ativo) { border-color: var(--rosa-escuro); }
 
 #troco-section { margin-bottom: 10px; }
@@ -267,7 +296,6 @@ header span {
   outline: none;
   transition: border-color 0.2s;
 }
-
 .input-valor:focus { border-color: var(--rosa-escuro); }
 
 .troco-valor {
@@ -292,7 +320,6 @@ header span {
   margin-top: 12px;
   letter-spacing: 0.3px;
 }
-
 .btn-finalizar:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(61,31,31,0.3); }
 .btn-finalizar:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
@@ -312,6 +339,9 @@ header span {
 }
 .btn-limpar:hover { border-color: var(--rosa-escuro); color: var(--rosa-escuro); }
 
+/* ========================
+   MODAL — DESKTOP
+   ======================== */
 .modal-overlay {
   display: none;
   position: fixed; inset: 0;
@@ -333,11 +363,14 @@ header span {
   animation: popUp 0.3s ease;
 }
 
-@keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes popUp {
+  from { transform: scale(0.8); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
 
 .modal-icon { font-size: 3rem; margin-bottom: 12px; }
 .modal h2 { font-family: 'Dancing Script', cursive; font-size: 2rem; color: var(--marrom); margin-bottom: 8px; }
-.modal p { font-size: 0.95rem; color: var(--marrom-medio); margin-bottom: 20px; line-height: 1.6; }
+.modal p  { font-size: 0.95rem; color: var(--marrom-medio); margin-bottom: 20px; line-height: 1.6; }
 
 .cupom-box {
   background: var(--creme2);
@@ -350,7 +383,6 @@ header span {
   text-align: left;
   line-height: 1.8;
 }
-
 .cupom-box strong { color: var(--marrom); }
 
 .modal-btn {
@@ -379,12 +411,130 @@ header span {
   margin-left: 6px;
 }
 
-.nav-link {
-  color: var(--rosa);
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-decoration: none;
-  opacity: 0.85;
-  transition: opacity 0.2s;
+.badge-tab {
+  background: var(--rosa);
+  color: var(--marrom);
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 1px 7px;
+  border-radius: 20px;
+  margin-left: 4px;
+  display: none;
+  transition: transform 0.2s;
 }
-.nav-link:hover { opacity: 1; }
+
+/* ========================
+   MOBILE  (≤ 768px)
+   ======================== */
+@media (max-width: 768px) {
+
+  /* Header compacto */
+  header {
+    padding: 13px 16px;
+  }
+  header h1 { font-size: 1.8rem; }
+  header span { font-size: 0.75rem; }
+  .nav-link { font-size: 0.78rem; }
+
+  /* Tabs aparecem */
+  .tabs-mobile {
+    display: flex;
+    background: var(--marrom);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 2px 10px var(--sombra);
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 13px 8px;
+    border: none;
+    background: transparent;
+    color: rgba(244,167,185,0.5);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 800;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  .tab-btn.ativo {
+    color: var(--rosa);
+    border-bottom-color: var(--rosa);
+    background: rgba(255,255,255,0.05);
+  }
+
+  /* Layout vira coluna única */
+  .container {
+    grid-template-columns: 1fr;
+    padding: 16px;
+    gap: 0;
+  }
+
+  /* Controle de visibilidade via JS */
+  .cardapio.oculto { display: none; }
+  .caixa.oculto    { display: none; }
+
+  /* Caixa perde sticky no mobile */
+  .caixa {
+    position: static;
+    border-radius: 18px;
+  }
+
+  /* Grid de itens 2 colunas */
+  .itens-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .item-btn { padding: 12px 8px; }
+  .item-btn:hover { transform: none; }
+  .item-btn:active { transform: scale(0.96); background: white; border-color: var(--rosa-escuro); }
+
+  /* Pedido lista menor */
+  .pedido-lista {
+    min-height: 140px;
+    max-height: 250px;
+  }
+
+  /* Botões de qty maiores para touch */
+  .qtd-btn { width: 30px; height: 30px; font-size: 1.1rem; }
+  .qtd-btn:hover { transform: none; }
+  .qtd-btn:active { transform: scale(0.9); }
+
+  /* Botão finalizar maior */
+  .btn-finalizar { padding: 16px; font-size: 1.05rem; }
+  .btn-finalizar:hover { transform: none; }
+
+  /* Modal sobe de baixo */
+  .modal-overlay {
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .modal {
+    border-radius: 24px 24px 0 0;
+    padding: 26px 18px 36px;
+    width: 100%;
+    max-width: 100%;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+
+  .modal-btn { padding: 13px 22px; font-size: 0.9rem; }
+
+  /* Forma de pagamento botões maiores */
+  .forma-btn { padding: 11px 6px; font-size: 0.82rem; }
+
+  /* Input numérico maior no mobile */
+  .input-valor { padding: 12px 14px; font-size: 1rem; }
+}
