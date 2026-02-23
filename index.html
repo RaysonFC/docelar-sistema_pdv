@@ -2,10 +2,10 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>Docelar — Sistema de Caixa</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style-desktop.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -15,15 +15,25 @@
     <span>Sistema de Caixa</span>
   </div>
   <div style="margin-left:auto; display:flex; align-items:center; gap:20px;">
-    <a href="index-mobile.html" class="nav-link">📱 Versão Mobile</a>
-    <a href="relatorio.html" class="nav-link">📊 Ver Relatório</a>
+    <a href="relatorio.html" class="nav-link">📊 Relatório</a>
   </div>
 </header>
+
+<!-- TABS — visíveis só no mobile via CSS -->
+<div class="tabs-mobile">
+  <button class="tab-btn ativo" id="tab-cardapio" onclick="mostrarTab('cardapio')">
+    🧁 Cardápio
+  </button>
+  <button class="tab-btn" id="tab-caixa" onclick="mostrarTab('caixa')">
+    🧾 Pedido
+    <span class="badge-tab" id="badge-tab">0</span>
+  </button>
+</div>
 
 <div class="container">
 
   <!-- CARDÁPIO -->
-  <div class="cardapio">
+  <div class="cardapio" id="secao-cardapio">
     <div class="categoria-card">
       <div class="categoria-titulo">Mini Vulcão</div>
       <div class="itens-grid" id="grid-vulcao"></div>
@@ -39,7 +49,7 @@
   </div>
 
   <!-- CAIXA -->
-  <div class="caixa">
+  <div class="caixa" id="secao-caixa">
     <div class="caixa-header">
       🧾 Pedido atual <span id="badge-qtd" class="badge" style="display:none">0</span>
     </div>
@@ -88,5 +98,69 @@
 </div>
 
 <script src="script.js"></script>
+<script>
+  const isMobile = () => window.innerWidth <= 768;
+
+  // ---- Controle das tabs mobile ----
+  function mostrarTab(tab) {
+    const cardapio = document.getElementById('secao-cardapio');
+    const caixa    = document.getElementById('secao-caixa');
+    const btnC     = document.getElementById('tab-cardapio');
+    const btnP     = document.getElementById('tab-caixa');
+
+    if (tab === 'cardapio') {
+      cardapio.classList.remove('oculto');
+      caixa.classList.add('oculto');
+      btnC.classList.add('ativo');
+      btnP.classList.remove('ativo');
+    } else {
+      caixa.classList.remove('oculto');
+      cardapio.classList.add('oculto');
+      btnP.classList.add('ativo');
+      btnC.classList.remove('ativo');
+    }
+  }
+
+  // Garante visibilidade correta ao redimensionar
+  function ajustarLayout() {
+    const cardapio = document.getElementById('secao-cardapio');
+    const caixa    = document.getElementById('secao-caixa');
+    if (!isMobile()) {
+      // Desktop: os dois sempre visíveis
+      cardapio.classList.remove('oculto');
+      caixa.classList.remove('oculto');
+    } else {
+      // Mobile: respeita tab ativa
+      const tabAtiva = document.querySelector('.tab-btn.ativo')?.id;
+      if (tabAtiva === 'tab-caixa') {
+        mostrarTab('caixa');
+      } else {
+        mostrarTab('cardapio');
+      }
+    }
+  }
+
+  window.addEventListener('resize', ajustarLayout);
+
+  // ---- Badge da tab de pedido ----
+  function atualizarBadgeTab() {
+    const total = pedido.reduce((s, i) => s + i.qtd, 0);
+    const badge = document.getElementById('badge-tab');
+    if (!badge) return;
+    badge.textContent = total;
+    badge.style.display = total > 0 ? 'inline' : 'none';
+  }
+
+  // Sobrescreve renderPedido para também atualizar badge da tab
+  const _origRenderPedido = window.renderPedido;
+  window.renderPedido = function () {
+    _origRenderPedido();
+    atualizarBadgeTab();
+  };
+
+  // ---- Init ----
+  ajustarLayout();
+  atualizarBadgeTab();
+</script>
 </body>
 </html>
