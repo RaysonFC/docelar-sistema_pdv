@@ -17,7 +17,7 @@ body {
   min-height: 100vh;
   background-image:
     radial-gradient(circle at 10% 20%, rgba(244,167,185,0.25) 0%, transparent 50%),
-    radial-gradient(circle at 90% 80%, rgba(224,122,149,0.2) 0%, transparent 50%);
+    radial-gradient(circle at 90% 80%, rgba(224,122,149,0.2)  0%, transparent 50%);
 }
 
 /* ========================
@@ -120,7 +120,6 @@ header span {
   font-family: 'Nunito', sans-serif;
   width: 100%;
 }
-
 .item-btn:hover {
   border-color: var(--rosa-escuro);
   background: white;
@@ -178,11 +177,10 @@ header span {
 
 .pedido-lista {
   min-height: 200px;
-  max-height: 340px;
+  max-height: 300px;
   overflow-y: auto;
   margin-bottom: 16px;
 }
-
 .pedido-lista::-webkit-scrollbar { width: 4px; }
 .pedido-lista::-webkit-scrollbar-track { background: var(--creme2); border-radius: 4px; }
 .pedido-lista::-webkit-scrollbar-thumb { background: var(--rosa); border-radius: 4px; }
@@ -209,12 +207,12 @@ header span {
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateX(10px); }
-  to { opacity: 1; transform: translateX(0); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
 .pedido-item-info { flex: 1; min-width: 0; }
 .pedido-item-nome { font-weight: 700; font-size: 0.82rem; color: var(--marrom); }
-.pedido-item-sub { font-size: 0.75rem; color: var(--marrom-medio); }
+.pedido-item-sub  { font-size: 0.75rem; color: var(--marrom-medio); }
 
 .qtd-controls { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 
@@ -228,15 +226,18 @@ header span {
   display: flex; align-items: center; justify-content: center;
   transition: all 0.15s;
 }
-.qtd-btn.menos { background: var(--rosa); color: var(--marrom); }
+.qtd-btn.menos { background: var(--rosa);   color: var(--marrom); }
 .qtd-btn.mais  { background: var(--marrom); color: var(--rosa); }
 .qtd-btn:hover { transform: scale(1.15); }
 
-.qtd-num { font-weight: 800; font-size: 0.9rem; color: var(--marrom); min-width: 20px; text-align: center; }
+.qtd-num   { font-weight: 800; font-size: 0.9rem; color: var(--marrom); min-width: 20px; text-align: center; }
 .item-total { font-weight: 800; font-size: 0.85rem; color: var(--marrom); min-width: 58px; text-align: right; flex-shrink: 0; }
 
 .divider { border: none; border-top: 2px dashed rgba(244,167,185,0.5); margin: 12px 0; }
 
+/* ========================
+   RESUMO
+   ======================== */
 .resumo { padding: 0 4px; }
 
 .resumo-linha {
@@ -256,8 +257,103 @@ header span {
   margin-top: 8px;
 }
 
-.pagamento-section { margin-top: 16px; }
-.pagamento-titulo { font-weight: 700; font-size: 0.85rem; color: var(--marrom); margin-bottom: 8px; }
+/* ========================
+   DESCONTO
+   ======================== */
+.desconto-section {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: var(--creme2);
+  border-radius: 14px;
+  border: 2px dashed rgba(244,167,185,0.5);
+}
+
+.desconto-titulo {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--marrom);
+  margin-bottom: 10px;
+}
+
+.desconto-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tipo-toggle {
+  display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid rgba(244,167,185,0.5);
+  flex-shrink: 0;
+}
+
+.btn-tipo {
+  padding: 7px 10px;
+  border: none;
+  background: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--marrom-medio);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-tipo.ativo { background: var(--marrom); color: var(--rosa); }
+
+.desconto-input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 2px solid rgba(244,167,185,0.5);
+  border-radius: 10px;
+  padding: 0 10px;
+  gap: 6px;
+  transition: border-color 0.2s;
+}
+.desconto-input-wrap:focus-within { border-color: var(--rosa-escuro); }
+
+.desconto-prefix {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--marrom-medio);
+  flex-shrink: 0;
+}
+
+.input-desconto {
+  border: none;
+  background: transparent;
+  padding: 8px 0;
+  font-size: 0.9rem;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  color: var(--marrom);
+  width: 100%;
+  outline: none;
+}
+
+.btn-remover-desconto {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(192,57,43,0.12);
+  color: #c0392b;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.btn-remover-desconto:hover { background: #c0392b; color: white; }
+
+/* ========================
+   PAGAMENTO
+   ======================== */
+.pagamento-section { margin-top: 14px; }
+.pagamento-titulo  { font-weight: 700; font-size: 0.85rem; color: var(--marrom); margin-bottom: 8px; }
 .formas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
 
 .forma-btn {
@@ -273,11 +369,7 @@ header span {
   transition: all 0.2s;
   text-align: center;
 }
-.forma-btn.ativo {
-  border-color: var(--marrom);
-  background: var(--marrom);
-  color: var(--rosa);
-}
+.forma-btn.ativo { border-color: var(--marrom); background: var(--marrom); color: var(--rosa); }
 .forma-btn:hover:not(.ativo) { border-color: var(--rosa-escuro); }
 
 #troco-section { margin-bottom: 10px; }
@@ -320,7 +412,7 @@ header span {
   margin-top: 12px;
   letter-spacing: 0.3px;
 }
-.btn-finalizar:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(61,31,31,0.3); }
+.btn-finalizar:hover    { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(61,31,31,0.3); }
 .btn-finalizar:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
 .btn-limpar {
@@ -340,7 +432,7 @@ header span {
 .btn-limpar:hover { border-color: var(--rosa-escuro); color: var(--rosa-escuro); }
 
 /* ========================
-   MODAL — DESKTOP
+   MODAL
    ======================== */
 .modal-overlay {
   display: none;
@@ -369,8 +461,8 @@ header span {
 }
 
 .modal-icon { font-size: 3rem; margin-bottom: 12px; }
-.modal h2 { font-family: 'Dancing Script', cursive; font-size: 2rem; color: var(--marrom); margin-bottom: 8px; }
-.modal p  { font-size: 0.95rem; color: var(--marrom-medio); margin-bottom: 20px; line-height: 1.6; }
+.modal h2   { font-family: 'Dancing Script', cursive; font-size: 2rem; color: var(--marrom); margin-bottom: 8px; }
+.modal p    { font-size: 0.95rem; color: var(--marrom-medio); margin-bottom: 20px; line-height: 1.6; }
 
 .cupom-box {
   background: var(--creme2);
@@ -401,6 +493,9 @@ header span {
 .modal-btn:hover { background: var(--marrom-medio); transform: translateY(-1px); }
 .modal-btn.secundario { background: transparent; color: var(--marrom-medio); border: 2px solid rgba(107,58,58,0.3); }
 
+/* ========================
+   BADGES
+   ======================== */
 .badge {
   background: var(--rosa);
   color: var(--marrom);
@@ -428,10 +523,7 @@ header span {
    ======================== */
 @media (max-width: 768px) {
 
-  /* Header compacto */
-  header {
-    padding: 13px 16px;
-  }
+  header { padding: 13px 16px; }
   header h1 { font-size: 1.8rem; }
   header span { font-size: 0.75rem; }
   .nav-link { font-size: 0.78rem; }
@@ -469,54 +561,44 @@ header span {
     background: rgba(255,255,255,0.05);
   }
 
-  /* Layout vira coluna única */
   .container {
     grid-template-columns: 1fr;
     padding: 16px;
     gap: 0;
   }
 
-  /* Controle de visibilidade via JS */
   .cardapio.oculto { display: none; }
   .caixa.oculto    { display: none; }
 
-  /* Caixa perde sticky no mobile */
-  .caixa {
-    position: static;
-    border-radius: 18px;
-  }
+  .caixa { position: static; border-radius: 18px; }
 
-  /* Grid de itens 2 colunas */
   .itens-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
 
-  .item-btn { padding: 12px 8px; }
-  .item-btn:hover { transform: none; }
-  .item-btn:active { transform: scale(0.96); background: white; border-color: var(--rosa-escuro); }
+  .item-btn          { padding: 12px 8px; }
+  .item-btn:hover    { transform: none; }
+  .item-btn:active   { transform: scale(0.96); background: white; border-color: var(--rosa-escuro); }
 
-  /* Pedido lista menor */
-  .pedido-lista {
-    min-height: 140px;
-    max-height: 250px;
-  }
+  /* Feedback "Adicionado!" */
+  .item-adicionado { background: var(--marrom) !important; border-color: var(--marrom) !important; transform: scale(0.97) !important; }
+  .item-adicionado .item-nome { color: var(--rosa) !important; font-size: 0.95rem !important; font-weight: 800 !important; }
 
-  /* Botões de qty maiores para touch */
-  .qtd-btn { width: 30px; height: 30px; font-size: 1.1rem; }
-  .qtd-btn:hover { transform: none; }
+  .pedido-lista { min-height: 140px; max-height: 220px; }
+
+  .qtd-btn        { width: 30px; height: 30px; font-size: 1.1rem; }
+  .qtd-btn:hover  { transform: none; }
   .qtd-btn:active { transform: scale(0.9); }
 
-  /* Botão finalizar maior */
-  .btn-finalizar { padding: 16px; font-size: 1.05rem; }
+  .btn-finalizar       { padding: 16px; font-size: 1.05rem; }
   .btn-finalizar:hover { transform: none; }
 
-  /* Modal sobe de baixo */
-  .modal-overlay {
-    align-items: flex-end;
-    justify-content: center;
-  }
+  .forma-btn   { padding: 11px 6px; font-size: 0.82rem; }
+  .input-valor { padding: 12px 14px; font-size: 1rem; }
 
+  /* Modal sobe de baixo */
+  .modal-overlay { align-items: flex-end; justify-content: center; }
   .modal {
     border-radius: 24px 24px 0 0;
     padding: 26px 18px 36px;
@@ -532,136 +614,7 @@ header span {
 
   .modal-btn { padding: 13px 22px; font-size: 0.9rem; }
 
-  /* Forma de pagamento botões maiores */
-  .forma-btn { padding: 11px 6px; font-size: 0.82rem; }
-
-  /* Input numérico maior no mobile */
-  .input-valor { padding: 12px 14px; font-size: 1rem; }
-
-  /* Feedback "Adicionado!" ao clicar no item */
-  .item-adicionado {
-    background: var(--marrom) !important;
-    border-color: var(--marrom) !important;
-    transform: scale(0.97) !important;
-    transition: all 0.15s ease !important;
-  }
-
-  .item-adicionado .item-nome {
-    color: var(--rosa) !important;
-    font-size: 0.95rem !important;
-    font-weight: 800 !important;
-  }
-}
-
-/* ========================
-   DESCONTO
-   ======================== */
-.desconto-section {
-  margin-top: 14px;
-  padding: 14px;
-  background: var(--creme2);
-  border-radius: 14px;
-  border: 2px dashed rgba(244,167,185,0.5);
-}
-
-.desconto-titulo {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--marrom);
-  margin-bottom: 10px;
-}
-
-.desconto-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.tipo-toggle {
-  display: flex;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 2px solid rgba(244,167,185,0.5);
-  flex-shrink: 0;
-}
-
-.btn-tipo {
-  padding: 7px 10px;
-  border: none;
-  background: white;
-  font-family: 'Nunito', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 800;
-  color: var(--marrom-medio);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.btn-tipo.ativo {
-  background: var(--marrom);
-  color: var(--rosa);
-}
-
-.desconto-input-wrap {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  background: white;
-  border: 2px solid rgba(244,167,185,0.5);
-  border-radius: 10px;
-  padding: 0 10px;
-  gap: 6px;
-  transition: border-color 0.2s;
-}
-
-.desconto-input-wrap:focus-within { border-color: var(--rosa-escuro); }
-
-.desconto-prefix {
-  font-size: 0.8rem;
-  font-weight: 800;
-  color: var(--marrom-medio);
-  flex-shrink: 0;
-}
-
-.input-desconto {
-  border: none !important;
-  background: transparent !important;
-  padding: 8px 0 !important;
-  font-size: 0.9rem;
-  width: 100%;
-}
-
-.btn-remover-desconto {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(192,57,43,0.12);
-  color: #c0392b;
-  font-size: 0.75rem;
-  font-weight: 800;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  transition: all 0.15s;
-}
-.btn-remover-desconto:hover { background: #c0392b; color: white; }
-
-.desconto-linha { color: #c0392b; }
-
-/* Resumo com desconto */
-.resumo-subtotal {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.82rem;
-  color: var(--marrom-medio);
-  margin-bottom: 4px;
-}
-
-.resumo-desconto {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #c0392b;
-  margin-bottom: 6px;
+  /* Desconto no mobile */
+  .desconto-section { padding: 10px 12px; }
+  .btn-tipo { padding: 8px 10px; }
 }
