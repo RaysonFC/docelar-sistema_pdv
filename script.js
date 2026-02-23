@@ -198,14 +198,18 @@ function atualizarResumo() {
 
   document.getElementById('res-itens').textContent = totalItens;
 
-  // Linha de subtotal
+  // Linhas de subtotal e desconto — ids únicos corrigidos
   const linhaSubtotal = document.getElementById('res-subtotal-linha');
+  const linhaDesconto = document.getElementById('res-desconto-linha');
+
   if (valorDesc > 0) {
     linhaSubtotal.style.display = 'flex';
+    linhaDesconto.style.display = 'flex';
     document.getElementById('res-subtotal').textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
     document.getElementById('res-desconto').textContent = `− R$ ${valorDesc.toFixed(2).replace('.', ',')}`;
   } else {
     linhaSubtotal.style.display = 'none';
+    linhaDesconto.style.display = 'none';
   }
 
   document.getElementById('res-total').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
