@@ -64,17 +64,16 @@
           <span>Itens</span>
           <span id="res-itens">0</span>
         </div>
-
-        <!-- Subtotal + desconto (visível só quando há desconto) -->
+        <!-- linha subtotal: só aparece quando há desconto -->
         <div class="resumo-linha" id="res-subtotal-linha" style="display:none">
           <span>Subtotal</span>
           <span id="res-subtotal">R$ 0,00</span>
         </div>
-        <div class="resumo-linha desconto-linha" id="res-subtotal-linha" style="display:none">
+        <!-- linha desconto: só aparece quando há desconto -->
+        <div class="resumo-linha" id="res-desconto-linha" style="display:none">
           <span>Desconto</span>
           <span id="res-desconto" style="color:#c0392b; font-weight:800;">− R$ 0,00</span>
         </div>
-
         <div class="resumo-total">
           <span>Total</span>
           <span id="res-total">R$ 0,00</span>
@@ -86,12 +85,12 @@
         <div class="desconto-titulo">🏷️ Desconto</div>
         <div class="desconto-row">
           <div class="tipo-toggle">
-            <button class="btn-tipo ativo" id="btn-tipo-reais"   onclick="alterarTipoDesconto('reais')">R$</button>
+            <button class="btn-tipo ativo" id="btn-tipo-reais"    onclick="alterarTipoDesconto('reais')">R$</button>
             <button class="btn-tipo"       id="btn-tipo-porcento" onclick="alterarTipoDesconto('porcento')">%</button>
           </div>
           <div class="desconto-input-wrap">
             <span class="desconto-prefix" id="label-desconto">R$</span>
-            <input type="number" id="input-desconto" class="input-valor input-desconto"
+            <input type="number" id="input-desconto" class="input-desconto"
               placeholder="0" min="0" step="0.01" oninput="aplicarDesconto()">
           </div>
           <button class="btn-remover-desconto" onclick="removerDesconto()" title="Remover desconto">✕</button>
@@ -171,7 +170,7 @@
     const total = pedido.reduce((s, i) => s + i.qtd, 0);
     const badge = document.getElementById('badge-tab');
     if (!badge) return;
-    badge.textContent  = total;
+    badge.textContent   = total;
     badge.style.display = total > 0 ? 'inline' : 'none';
   }
 
