@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docelar — Relatório de Vendas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Estilos extras exclusivos do relatório */
+    .rel-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .cards-resumo {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .card-resumo {
+      background: white;
+      border-radius: 18px;
+      padding: 20px 24px;
+      box-shadow: 0 4px 20px var(--sombra);
+      border: 2px solid rgba(244,167,185,0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .card-resumo .cr-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--marrom-medio);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card-resumo .cr-valor {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--marrom);
+      line-height: 1;
+    }
+
+    .card-resumo .cr-icon {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+
+    .secao-card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 4px 20px var(--sombra);
+      border: 2px solid rgba(244,167,185,0.3);
+    }
+
+    .secao-titulo {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--marrom);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Tabela de itens mais vendidos */
+    .ranking-lista { display: flex; flex-direction: column; gap: 10px; }
+
+    .ranking-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--creme2);
+      border-radius: 12px;
+    }
+
+    .ranking-pos {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--marrom);
+      color: var(--rosa);
+      font-weight: 800;
+      font-size: 0.8rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .ranking-pos.top1 { background: #d4a017; color: white; }
+    .ranking-pos.top2 { background: #9e9e9e; color: white; }
+    .ranking-pos.top3 { background: #a0522d; color: white; }
+
+    .ranking-nome { flex: 1; font-weight: 700; font-size: 0.9rem; color: var(--marrom); }
+
+    .ranking-qtd {
+      font-size: 0.82rem;
+      color: var(--marrom-medio);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .ranking-total {
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: var(--marrom);
+      min-width: 80px;
+      text-align: right;
+    }
+
+    .barra-container { flex: 1; max-width: 120px; }
+    .barra {
+      height: 6px;
+      background: var(--rosa);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    /* Tabela de pagamentos */
+    .pagamentos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .pagamento-card {
+      background: var(--creme2);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .pagamento-card .pg-icon { font-size: 1.6rem; margin-bottom: 6px; }
+    .pagamento-card .pg-nome { font-size: 0.78rem; font-weight: 700; color: var(--marrom-medio); margin-bottom: 4px; }
+    .pagamento-card .pg-qtd { font-size: 1.3rem; font-weight: 800; color: var(--marrom); }
+    .pagamento-card .pg-valor { font-size: 0.8rem; color: var(--marrom-medio); font-weight: 600; }
+
+    /* Histórico de vendas */
+    .historico-lista { display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 4px; }
+    .historico-lista::-webkit-scrollbar { width: 4px; }
+    .historico-lista::-webkit-scrollbar-thumb { background: var(--rosa); border-radius: 4px; }
+
+    .venda-card {
+      border: 2px solid rgba(244,167,185,0.3);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .venda-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: var(--creme2);
+      cursor: pointer;
+      gap: 12px;
+    }
+
+    .venda-header:hover { background: rgba(244,167,185,0.2); }
+
+    .venda-info { display: flex; flex-direction: column; gap: 2px; }
+    .venda-info strong { font-size: 0.88rem; color: var(--marrom); }
+    .venda-info span { font-size: 0.75rem; color: var(--marrom-medio); }
+
+    .venda-badge {
+      background: var(--marrom);
+      color: var(--rosa);
+      font-size: 0.8rem;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .venda-forma {
+      font-size: 0.78rem;
+      color: var(--marrom-medio);
+      font-weight: 700;
+    }
+
+    .venda-detalhes {
+      display: none;
+      padding: 14px 16px;
+      font-size: 0.83rem;
+      color: var(--marrom);
+      line-height: 1.9;
+      border-top: 1px dashed rgba(244,167,185,0.5);
+    }
+
+    .venda-detalhes.aberto { display: block; }
+
+    /* Filtros */
+    .filtros {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .filtro-btn {
+      padding: 6px 14px;
+      border: 2px solid rgba(244,167,185,0.4);
+      border-radius: 20px;
+      background: var(--creme2);
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--marrom);
+      transition: all 0.2s;
+    }
+
+    .filtro-btn.ativo, .filtro-btn:hover {
+      background: var(--marrom);
+      color: var(--rosa);
+      border-color: var(--marrom);
+    }
+
+    /* Botão limpar */
+    .btn-danger {
+      padding: 10px 20px;
+      background: transparent;
+      color: #c0392b;
+      border: 2px solid rgba(192,57,43,0.4);
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-danger:hover { background: #c0392b; color: white; border-color: #c0392b; }
+
+    .vazio-msg {
+      text-align: center;
+      color: var(--marrom-medio);
+      opacity: 0.5;
+      padding: 40px;
+      font-size: 0.9rem;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--rosa);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      opacity: 0.85;
+      transition: opacity 0.2s;
+    }
+    .nav-link:hover { opacity: 1; }
+
+    .header-actions { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Docelar</h1>
+    <span>Relatório de Vendas</span>
+  </div>
+  <div class="header-actions">
+    <a href="index.html" class="nav-link">← Voltar ao Caixa</a>
+  </div>
+</header>
+
+<div class="rel-container">
+
+  <!-- CARDS DE RESUMO -->
+  <div class="cards-resumo" id="cards-resumo"></div>
+
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 24px;" id="grid-meio">
+
+    <!-- ITENS MAIS VENDIDOS -->
+    <div class="secao-card">
+      <div class="secao-titulo">🏆 Itens Mais Vendidos</div>
+      <div class="ranking-lista" id="ranking-lista"></div>
+    </div>
+
+    <!-- FORMAS DE PAGAMENTO -->
+    <div class="secao-card">
+      <div class="secao-titulo">💳 Formas de Pagamento</div>
+      <div class="pagamentos-grid" id="pagamentos-grid"></div>
+    </div>
+
+  </div>
+
+  <!-- HISTÓRICO DE VENDAS -->
+  <div class="secao-card">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+      <div class="secao-titulo" style="margin-bottom:0">📋 Histórico de Vendas</div>
+      <button class="btn-danger" onclick="confirmarLimpar()">🗑️ Limpar histórico</button>
+    </div>
+    <div class="filtros" id="filtros-data"></div>
+    <div class="historico-lista" id="historico-lista"></div>
+  </div>
+
+</div>
+
+<script>
+// =====================
+//  DADOS
+// =====================
+function getHistorico() {
+  return JSON.parse(localStorage.getItem('historico_vendas')) || [];
+}
+
+const iconesPagamento = {
+  'Dinheiro': '💵',
+  'Pix': '📱',
+  'Débito': '💳',
+  'Crédito': '💳',
+};
+
+// =====================
+//  RENDERIZAR RELATÓRIO
+// =====================
+let filtroData = 'todos';
+
+function renderTudo() {
+  const historico = getHistorico();
+  const filtrado = filtrarPorData(historico, filtroData);
+
+  renderCardsResumo(filtrado);
+  renderRanking(filtrado);
+  renderPagamentos(filtrado);
+  renderFiltros(historico);
+  renderHistorico(filtrado);
+}
+
+// ---- Cards de resumo ----
+function renderCardsResumo(vendas) {
+  const totalVendas = vendas.length;
+  const totalFaturado = vendas.reduce((s, v) => s + v.total, 0);
+  const totalItens = vendas.reduce((s, v) => s + v.itens.reduce((ss, i) => ss + i.qtd, 0), 0);
+  const ticketMedio = totalVendas > 0 ? totalFaturado / totalVendas : 0;
+
+  document.getElementById('cards-resumo').innerHTML = `
+    <div class="card-resumo">
+      <div class="cr-icon">🛍️</div>
+      <div class="cr-label">Total de Vendas</div>
+      <div class="cr-valor">${totalVendas}</div>
+    </div>
+    <div class="card-resumo">
+      <div class="cr-icon">💰</div>
+      <div class="cr-label">Faturamento Total</div>
+      <div class="cr-valor">R$ ${totalFaturado.toFixed(2).replace('.', ',')}</div>
+    </div>
+    <div class="card-resumo">
+      <div class="cr-icon">🧁</div>
+      <div class="cr-label">Itens Vendidos</div>
+      <div class="cr-valor">${totalItens}</div>
+    </div>
+    <div class="card-resumo">
+      <div class="cr-icon">📊</div>
+      <div class="cr-label">Ticket Médio</div>
+      <div class="cr-valor">R$ ${ticketMedio.toFixed(2).replace('.', ',')}</div>
+    </div>
+  `;
+}
+
+// ---- Ranking ----
+function renderRanking(vendas) {
+  const contagem = {};
+  vendas.forEach(v => {
+    v.itens.forEach(i => {
+      if (!contagem[i.nome]) contagem[i.nome] = { qtd: 0, total: 0 };
+      contagem[i.nome].qtd += i.qtd;
+      contagem[i.nome].total += i.preco * i.qtd;
+    });
+  });
+
+  const sorted = Object.entries(contagem).sort((a, b) => b[1].qtd - a[1].qtd);
+  const maxQtd = sorted[0]?.[1]?.qtd || 1;
+  const el = document.getElementById('ranking-lista');
+
+  if (sorted.length === 0) {
+    el.innerHTML = '<div class="vazio-msg">Nenhuma venda registrada ainda.</div>';
+    return;
+  }
+
+  el.innerHTML = sorted.map(([nome, dados], idx) => {
+    const posClass = idx === 0 ? 'top1' : idx === 1 ? 'top2' : idx === 2 ? 'top3' : '';
+    const largura = Math.round((dados.qtd / maxQtd) * 100);
+    return `
+      <div class="ranking-item">
+        <div class="ranking-pos ${posClass}">${idx + 1}</div>
+        <div class="ranking-nome">${nome}</div>
+        <div class="barra-container">
+          <div class="barra" style="width:${largura}%"></div>
+        </div>
+        <div class="ranking-qtd">${dados.qtd} un.</div>
+        <div class="ranking-total">R$ ${dados.total.toFixed(2).replace('.', ',')}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ---- Pagamentos ----
+function renderPagamentos(vendas) {
+  const formas = {};
+  vendas.forEach(v => {
+    if (!formas[v.formaPagamento]) formas[v.formaPagamento] = { qtd: 0, total: 0 };
+    formas[v.formaPagamento].qtd++;
+    formas[v.formaPagamento].total += v.total;
+  });
+
+  const el = document.getElementById('pagamentos-grid');
+
+  if (Object.keys(formas).length === 0) {
+    el.innerHTML = '<div class="vazio-msg">Nenhuma venda ainda.</div>';
+    return;
+  }
+
+  el.innerHTML = Object.entries(formas).map(([forma, dados]) => `
+    <div class="pagamento-card">
+      <div class="pg-icon">${iconesPagamento[forma] || '💰'}</div>
+      <div class="pg-nome">${forma}</div>
+      <div class="pg-qtd">${dados.qtd} venda${dados.qtd > 1 ? 's' : ''}</div>
+      <div class="pg-valor">R$ ${dados.total.toFixed(2).replace('.', ',')}</div>
+    </div>
+  `).join('');
+}
+
+// ---- Filtros por data ----
+function renderFiltros(historico) {
+  const datas = [...new Set(historico.map(v => v.data))].reverse();
+  const el = document.getElementById('filtros-data');
+
+  const botoes = [
+    `<button class="filtro-btn ${filtroData === 'todos' ? 'ativo' : ''}" onclick="setFiltro('todos')">Todos</button>`,
+    ...datas.map(d => `<button class="filtro-btn ${filtroData === d ? 'ativo' : ''}" onclick="setFiltro('${d}')">${d}</button>`)
+  ];
+
+  el.innerHTML = botoes.join('');
+}
+
+function setFiltro(data) {
+  filtroData = data;
+  renderTudo();
+}
+
+function filtrarPorData(historico, filtro) {
+  if (filtro === 'todos') return historico;
+  return historico.filter(v => v.data === filtro);
+}
+
+// ---- Histórico ----
+function renderHistorico(vendas) {
+  const el = document.getElementById('historico-lista');
+
+  if (vendas.length === 0) {
+    el.innerHTML = '<div class="vazio-msg">Nenhuma venda encontrada.</div>';
+    return;
+  }
+
+  const sorted = [...vendas].reverse();
+
+  el.innerHTML = sorted.map(v => {
+    const itensTexto = v.itens.map(i => `${i.qtd}x ${i.nome} — R$ ${(i.preco * i.qtd).toFixed(2).replace('.', ',')}`).join('<br>');
+    let extra = '';
+    if (v.formaPagamento === 'Dinheiro' && v.recebido != null) {
+      extra = `<br>Recebido: R$ ${v.recebido.toFixed(2).replace('.', ',')} &nbsp;|&nbsp; Troco: R$ ${v.troco.toFixed(2).replace('.', ',')}`;
+    }
+    return `
+      <div class="venda-card">
+        <div class="venda-header" onclick="toggleVenda(${v.id})">
+          <div class="venda-info">
+            <strong>📅 ${v.data} às ${v.hora}</strong>
+            <span>${v.itens.reduce((s, i) => s + i.qtd, 0)} iten(s) &nbsp;·&nbsp; ${iconesPagamento[v.formaPagamento] || ''} ${v.formaPagamento}</span>
+          </div>
+          <div class="venda-badge">R$ ${v.total.toFixed(2).replace('.', ',')}</div>
+          <span style="color:var(--marrom-medio); font-size:0.9rem">▾</span>
+        </div>
+        <div class="venda-detalhes" id="detalhe-${v.id}">
+          ${itensTexto}${extra}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleVenda(id) {
+  const el = document.getElementById(`detalhe-${id}`);
+  el.classList.toggle('aberto');
+}
+
+// ---- Limpar histórico ----
+function confirmarLimpar() {
+  if (confirm('Tem certeza que deseja apagar todo o histórico de vendas? Esta ação não pode ser desfeita.')) {
+    localStorage.removeItem('historico_vendas');
+    renderTudo();
+  }
+}
+
+// =====================
+//  INIT
+// =====================
+renderTudo();
+
+// Atualizar ao voltar para a aba
+window.addEventListener('focus', renderTudo);
+</script>
+</body>
+</html>
