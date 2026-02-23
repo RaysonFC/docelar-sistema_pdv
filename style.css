@@ -52,7 +52,6 @@ header span {
   margin: 0 auto;
 }
 
-/* CARDÁPIO */
 .cardapio { display: flex; flex-direction: column; gap: 20px; }
 
 .categoria-titulo {
@@ -123,7 +122,6 @@ header span {
   border-radius: 20px;
 }
 
-/* CAIXA */
 .caixa {
   background: var(--branco);
   border-radius: 20px;
@@ -187,11 +185,7 @@ header span {
 .pedido-item-nome { font-weight: 700; font-size: 0.82rem; color: var(--marrom); }
 .pedido-item-sub { font-size: 0.75rem; color: var(--marrom-medio); }
 
-.qtd-controls {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+.qtd-controls { display: flex; align-items: center; gap: 6px; }
 
 .qtd-btn {
   width: 26px; height: 26px;
@@ -208,7 +202,6 @@ header span {
 .qtd-btn:hover { transform: scale(1.15); }
 
 .qtd-num { font-weight: 800; font-size: 0.9rem; color: var(--marrom); min-width: 20px; text-align: center; }
-
 .item-total { font-weight: 800; font-size: 0.85rem; color: var(--marrom); min-width: 58px; text-align: right; }
 
 .divider { border: none; border-top: 2px dashed rgba(244,167,185,0.5); margin: 12px 0; }
@@ -233,9 +226,7 @@ header span {
 }
 
 .pagamento-section { margin-top: 16px; }
-
 .pagamento-titulo { font-weight: 700; font-size: 0.85rem; color: var(--marrom); margin-bottom: 8px; }
-
 .formas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
 
 .forma-btn {
@@ -261,7 +252,6 @@ header span {
 .forma-btn:hover:not(.ativo) { border-color: var(--rosa-escuro); }
 
 #troco-section { margin-bottom: 10px; }
-
 .input-label { font-size: 0.8rem; font-weight: 700; color: var(--marrom); margin-bottom: 4px; }
 
 .input-valor {
@@ -322,7 +312,6 @@ header span {
 }
 .btn-limpar:hover { border-color: var(--rosa-escuro); color: var(--rosa-escuro); }
 
-/* MODAL */
 .modal-overlay {
   display: none;
   position: fixed; inset: 0;
@@ -389,3 +378,13 @@ header span {
   border-radius: 20px;
   margin-left: 6px;
 }
+
+.nav-link {
+  color: var(--rosa);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+.nav-link:hover { opacity: 1; }
