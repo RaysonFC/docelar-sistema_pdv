@@ -228,6 +228,87 @@
     }
     .btn-danger:hover { background: #c0392b; color: white; border-color: #c0392b; }
 
+
+    /* ========================
+       RESUMO DO DIA
+       ======================== */
+    .resumo-dia {
+      background: linear-gradient(135deg, var(--marrom) 0%, var(--marrom-medio) 100%);
+      border-radius: 20px;
+      padding: 22px 28px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 6px 24px rgba(61,31,31,0.2);
+      flex-wrap: wrap;
+    }
+
+    .resumo-dia-titulo {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.5rem;
+      color: var(--rosa);
+      flex-shrink: 0;
+      min-width: 130px;
+    }
+
+    .resumo-dia-titulo span {
+      display: block;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: rgba(244,167,185,0.6);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .resumo-dia-stats {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .dia-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .dia-stat-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: rgba(244,167,185,0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .dia-stat-valor {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: white;
+      line-height: 1;
+    }
+
+    .dia-stat-valor.destaque {
+      font-size: 1.7rem;
+      color: var(--rosa);
+    }
+
+    .resumo-dia-vazio {
+      color: rgba(244,167,185,0.5);
+      font-size: 0.88rem;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      .resumo-dia { padding: 16px; gap: 14px; }
+      .resumo-dia-titulo { font-size: 1.2rem; min-width: 100%; }
+      .resumo-dia-stats { gap: 16px; }
+      .dia-stat-valor { font-size: 1.1rem; }
+      .dia-stat-valor.destaque { font-size: 1.4rem; }
+    }
+
     .vazio-msg {
       text-align: center;
       color: var(--marrom-medio);
@@ -316,6 +397,9 @@
 
 <div class="rel-container">
 
+  <!-- RESUMO DO DIA -->
+  <div id="resumo-dia-container"></div>
+
   <!-- CARDS RESUMO -->
   <div class="cards-resumo" id="cards-resumo"></div>
 
@@ -355,11 +439,67 @@ let filtroData = 'todos';
 function renderTudo() {
   const historico = getHistorico();
   const filtrado  = filtrarPorData(historico, filtroData);
+  renderResumoDia();
   renderCardsResumo(filtrado);
   renderRanking(filtrado);
   renderPagamentos(filtrado);
   renderFiltros(historico);
   renderHistorico(filtrado);
+}
+
+
+function renderResumoDia() {
+  const historico = getHistorico();
+  const hoje = new Date().toLocaleDateString('pt-BR');
+  const vendasHoje = historico.filter(v => v.data === hoje);
+
+  const el = document.getElementById('resumo-dia-container');
+
+  const faturamento = vendasHoje.reduce((s, v) => s + v.total, 0);
+  const totalItens  = vendasHoje.reduce((s, v) => s + v.itens.reduce((ss, i) => ss + i.qtd, 0), 0);
+  const ticketMedio = vendasHoje.length > 0 ? faturamento / vendasHoje.length : 0;
+
+  // Item mais vendido hoje
+  const contagem = {};
+  vendasHoje.forEach(v => v.itens.forEach(i => {
+    contagem[i.nome] = (contagem[i.nome] || 0) + i.qtd;
+  }));
+  const maisVendido = Object.entries(contagem).sort((a, b) => b[1] - a[1])[0];
+
+  el.innerHTML = `
+    <div class="resumo-dia">
+      <div class="resumo-dia-titulo">
+        <span>Resumo de hoje</span>
+        ${hoje}
+      </div>
+      ${vendasHoje.length === 0
+        ? '<div class="resumo-dia-vazio">Nenhuma venda registrada hoje ainda.</div>'
+        : `<div class="resumo-dia-stats">
+            <div class="dia-stat">
+              <div class="dia-stat-label">Faturamento</div>
+              <div class="dia-stat-valor destaque">R$ ${faturamento.toFixed(2).replace('.', ',')}</div>
+            </div>
+            <div class="dia-stat">
+              <div class="dia-stat-label">Vendas</div>
+              <div class="dia-stat-valor">${vendasHoje.length}</div>
+            </div>
+            <div class="dia-stat">
+              <div class="dia-stat-label">Itens</div>
+              <div class="dia-stat-valor">${totalItens}</div>
+            </div>
+            <div class="dia-stat">
+              <div class="dia-stat-label">Ticket Médio</div>
+              <div class="dia-stat-valor">R$ ${ticketMedio.toFixed(2).replace('.', ',')}</div>
+            </div>
+            ${maisVendido ? `
+            <div class="dia-stat">
+              <div class="dia-stat-label">🏆 Mais Vendido</div>
+              <div class="dia-stat-valor" style="font-size:0.9rem; max-width:140px; line-height:1.3">${maisVendido[0]}</div>
+            </div>` : ''}
+          </div>`
+      }
+    </div>
+  `;
 }
 
 function renderCardsResumo(vendas) {
