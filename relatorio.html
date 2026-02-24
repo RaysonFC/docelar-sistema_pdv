@@ -6,13 +6,15 @@
   <title>Docelar — Relatório de Vendas</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <!-- PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#3d1f1f">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Docelar">
   <link rel="apple-touch-icon" href="icon-192.png">
   <style>
+    /* ========================
+       LAYOUT GERAL
+       ======================== */
     .rel-container {
       max-width: 1100px;
       margin: 0 auto;
@@ -21,13 +23,18 @@
       flex-direction: column;
       gap: 24px;
     }
+
     .header-actions { margin-left: auto; display: flex; align-items: center; gap: 16px; }
 
+    /* ========================
+       CARDS RESUMO
+       ======================== */
     .cards-resumo {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 16px;
     }
+
     .card-resumo {
       background: white;
       border-radius: 18px;
@@ -38,15 +45,23 @@
       flex-direction: column;
       gap: 6px;
     }
+
     .cr-icon  { font-size: 1.5rem; margin-bottom: 4px; }
     .cr-label { font-size: 0.8rem; font-weight: 700; color: var(--marrom-medio); text-transform: uppercase; letter-spacing: 0.5px; }
     .cr-valor { font-size: 1.7rem; font-weight: 800; color: var(--marrom); line-height: 1; }
 
+    /* ========================
+       GRID MEIO (ranking + pagamentos)
+       ======================== */
     .grid-meio {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 24px;
     }
+
+    /* ========================
+       SEÇÃO CARD
+       ======================== */
     .secao-card {
       background: white;
       border-radius: 20px;
@@ -54,6 +69,7 @@
       box-shadow: 0 4px 20px var(--sombra);
       border: 2px solid rgba(244,167,185,0.3);
     }
+
     .secao-titulo {
       font-size: 1.1rem;
       font-weight: 800;
@@ -64,7 +80,11 @@
       gap: 8px;
     }
 
+    /* ========================
+       RANKING
+       ======================== */
     .ranking-lista { display: flex; flex-direction: column; gap: 10px; }
+
     .ranking-item {
       display: flex;
       align-items: center;
@@ -73,6 +93,7 @@
       background: var(--creme2);
       border-radius: 12px;
     }
+
     .ranking-pos {
       width: 28px; height: 28px;
       border-radius: 50%;
@@ -86,28 +107,38 @@
     .ranking-pos.top1 { background: #d4a017; color: white; }
     .ranking-pos.top2 { background: #9e9e9e; color: white; }
     .ranking-pos.top3 { background: #a0522d; color: white; }
-    .ranking-nome  { flex: 1; font-weight: 700; font-size: 0.9rem; color: var(--marrom); }
-    .ranking-qtd   { font-size: 0.82rem; color: var(--marrom-medio); font-weight: 600; white-space: nowrap; }
+
+    .ranking-nome { flex: 1; font-weight: 700; font-size: 0.9rem; color: var(--marrom); }
+    .ranking-qtd  { font-size: 0.82rem; color: var(--marrom-medio); font-weight: 600; white-space: nowrap; }
     .ranking-total { font-weight: 800; font-size: 0.88rem; color: var(--marrom); min-width: 80px; text-align: right; }
+
     .barra-container { flex: 1; max-width: 120px; }
     .barra { height: 6px; background: var(--rosa); border-radius: 4px; transition: width 0.5s ease; }
 
+    /* ========================
+       PAGAMENTOS
+       ======================== */
     .pagamentos-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
       gap: 12px;
     }
+
     .pagamento-card {
       background: var(--creme2);
       border-radius: 14px;
       padding: 16px;
       text-align: center;
     }
+
     .pg-icon  { font-size: 1.6rem; margin-bottom: 6px; }
     .pg-nome  { font-size: 0.78rem; font-weight: 700; color: var(--marrom-medio); margin-bottom: 4px; }
     .pg-qtd   { font-size: 1.3rem; font-weight: 800; color: var(--marrom); }
     .pg-valor { font-size: 0.8rem; color: var(--marrom-medio); font-weight: 600; }
 
+    /* ========================
+       HISTÓRICO
+       ======================== */
     .historico-lista {
       display: flex;
       flex-direction: column;
@@ -119,7 +150,12 @@
     .historico-lista::-webkit-scrollbar { width: 4px; }
     .historico-lista::-webkit-scrollbar-thumb { background: var(--rosa); border-radius: 4px; }
 
-    .venda-card { border: 2px solid rgba(244,167,185,0.3); border-radius: 14px; overflow: hidden; }
+    .venda-card {
+      border: 2px solid rgba(244,167,185,0.3);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
     .venda-header {
       display: flex;
       align-items: center;
@@ -130,9 +166,11 @@
       gap: 12px;
     }
     .venda-header:hover { background: rgba(244,167,185,0.2); }
+
     .venda-info { display: flex; flex-direction: column; gap: 2px; flex: 1; }
     .venda-info strong { font-size: 0.88rem; color: var(--marrom); }
     .venda-info span   { font-size: 0.75rem; color: var(--marrom-medio); }
+
     .venda-badge {
       background: var(--marrom);
       color: var(--rosa);
@@ -143,6 +181,7 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
+
     .venda-detalhes {
       display: none;
       padding: 14px 16px;
@@ -153,7 +192,11 @@
     }
     .venda-detalhes.aberto { display: block; }
 
+    /* ========================
+       FILTROS
+       ======================== */
     .filtros { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+
     .filtro-btn {
       padding: 6px 14px;
       border: 2px solid rgba(244,167,185,0.4);
@@ -166,8 +209,15 @@
       color: var(--marrom);
       transition: all 0.2s;
     }
-    .filtro-btn.ativo, .filtro-btn:hover { background: var(--marrom); color: var(--rosa); border-color: var(--marrom); }
+    .filtro-btn.ativo, .filtro-btn:hover {
+      background: var(--marrom);
+      color: var(--rosa);
+      border-color: var(--marrom);
+    }
 
+    /* ========================
+       BOTÃO DANGER
+       ======================== */
     .btn-danger {
       padding: 10px 20px;
       background: transparent;
@@ -183,6 +233,10 @@
     }
     .btn-danger:hover { background: #c0392b; color: white; border-color: #c0392b; }
 
+
+    /* ========================
+       RESUMO DO DIA
+       ======================== */
     .resumo-dia {
       background: linear-gradient(135deg, var(--marrom) 0%, var(--marrom-medio) 100%);
       border-radius: 20px;
@@ -193,6 +247,7 @@
       box-shadow: 0 6px 24px rgba(61,31,31,0.2);
       flex-wrap: wrap;
     }
+
     .resumo-dia-titulo {
       font-family: 'Dancing Script', cursive;
       font-size: 1.5rem;
@@ -200,6 +255,7 @@
       flex-shrink: 0;
       min-width: 130px;
     }
+
     .resumo-dia-titulo span {
       display: block;
       font-family: 'Nunito', sans-serif;
@@ -210,14 +266,61 @@
       text-transform: uppercase;
       margin-bottom: 2px;
     }
-    .resumo-dia-stats { display: flex; gap: 24px; flex-wrap: wrap; flex: 1; }
-    .dia-stat { display: flex; flex-direction: column; gap: 3px; }
-    .dia-stat-label { font-size: 0.72rem; font-weight: 700; color: rgba(244,167,185,0.6); text-transform: uppercase; letter-spacing: 0.4px; }
-    .dia-stat-valor { font-size: 1.3rem; font-weight: 800; color: white; line-height: 1; }
-    .dia-stat-valor.destaque { font-size: 1.7rem; color: var(--rosa); }
-    .resumo-dia-vazio { color: rgba(244,167,185,0.5); font-size: 0.88rem; font-style: italic; }
 
-    .vazio-msg { text-align: center; color: var(--marrom-medio); opacity: 0.5; padding: 40px; font-size: 0.9rem; }
+    .resumo-dia-stats {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .dia-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .dia-stat-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: rgba(244,167,185,0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .dia-stat-valor {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: white;
+      line-height: 1;
+    }
+
+    .dia-stat-valor.destaque {
+      font-size: 1.7rem;
+      color: var(--rosa);
+    }
+
+    .resumo-dia-vazio {
+      color: rgba(244,167,185,0.5);
+      font-size: 0.88rem;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      .resumo-dia { padding: 16px; gap: 14px; }
+      .resumo-dia-titulo { font-size: 1.2rem; min-width: 100%; }
+      .resumo-dia-stats { gap: 16px; }
+      .dia-stat-valor { font-size: 1.1rem; }
+      .dia-stat-valor.destaque { font-size: 1.4rem; }
+    }
+
+    .vazio-msg {
+      text-align: center;
+      color: var(--marrom-medio);
+      opacity: 0.5;
+      padding: 40px;
+      font-size: 0.9rem;
+    }
 
     .secao-header-row {
       display: flex;
@@ -229,22 +332,59 @@
     }
     .secao-header-row .secao-titulo { margin-bottom: 0; }
 
+    /* ========================
+       MOBILE  (≤ 768px)
+       ======================== */
     @media (max-width: 768px) {
+
+      /* Header */
       header { padding: 13px 16px; }
       header h1 { font-size: 1.8rem; }
+      header span { font-size: 0.75rem; }
+
       .rel-container { padding: 14px; gap: 14px; }
-      .cards-resumo { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-      .card-resumo  { padding: 14px 16px; }
-      .cr-valor     { font-size: 1.35rem; }
-      .grid-meio    { grid-template-columns: 1fr; gap: 14px; }
-      .secao-card   { padding: 16px; border-radius: 16px; }
+
+      /* Cards resumo: 2 colunas */
+      .cards-resumo {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .card-resumo { padding: 14px 16px; }
+      .cr-valor { font-size: 1.35rem; }
+      .cr-icon  { font-size: 1.2rem; }
+
+      /* Grid meio: coluna única */
+      .grid-meio { grid-template-columns: 1fr; gap: 14px; }
+
+      /* Seção card */
+      .secao-card { padding: 16px; border-radius: 16px; }
+      .secao-titulo { font-size: 1rem; margin-bottom: 12px; }
+
+      /* Ranking: esconder barra no mobile */
       .barra-container { display: none; }
+      .ranking-item { gap: 8px; padding: 10px 12px; }
+      .ranking-nome { font-size: 0.82rem; }
+      .ranking-total { min-width: 64px; font-size: 0.82rem; }
+
+      /* Histórico sem max-height fixa */
       .historico-lista { max-height: none; }
-      .resumo-dia   { padding: 16px; gap: 14px; }
-      .resumo-dia-titulo { font-size: 1.2rem; min-width: 100%; }
-      .resumo-dia-stats  { gap: 16px; }
-      .dia-stat-valor         { font-size: 1.1rem; }
-      .dia-stat-valor.destaque { font-size: 1.4rem; }
+
+      /* Venda header mais compacto */
+      .venda-header { padding: 10px 12px; gap: 8px; }
+      .venda-info strong { font-size: 0.82rem; }
+      .venda-info span   { font-size: 0.7rem; }
+      .venda-badge { font-size: 0.75rem; padding: 3px 10px; }
+
+      /* Filtros menores */
+      .filtro-btn { padding: 5px 11px; font-size: 0.75rem; }
+
+      /* Botão danger menor */
+      .btn-danger { padding: 8px 14px; font-size: 0.8rem; }
+
+      /* Header actions */
+      .header-actions { gap: 10px; }
+      .nav-link { font-size: 0.78rem; }
     }
   </style>
 </head>
@@ -261,8 +401,14 @@
 </header>
 
 <div class="rel-container">
+
+  <!-- RESUMO DO DIA -->
   <div id="resumo-dia-container"></div>
+
+  <!-- CARDS RESUMO -->
   <div class="cards-resumo" id="cards-resumo"></div>
+
+  <!-- RANKING + PAGAMENTOS -->
   <div class="grid-meio">
     <div class="secao-card">
       <div class="secao-titulo">🏆 Itens Mais Vendidos</div>
@@ -273,6 +419,8 @@
       <div class="pagamentos-grid" id="pagamentos-grid"></div>
     </div>
   </div>
+
+  <!-- HISTÓRICO -->
   <div class="secao-card">
     <div class="secao-header-row">
       <div class="secao-titulo">📋 Histórico de Vendas</div>
@@ -281,21 +429,17 @@
     <div class="filtros" id="filtros-data"></div>
     <div class="historico-lista" id="historico-lista"></div>
   </div>
+
 </div>
 
 <script>
-const iconesPagamento = { 'Dinheiro': '💵', 'Pix': '📱' };
-let filtroData = 'todos';
-
 function getHistorico() {
   return JSON.parse(localStorage.getItem('historico_vendas')) || [];
 }
 
-function filtrarPorData(historico, filtro) {
-  return filtro === 'todos' ? historico : historico.filter(v => v.data === filtro);
-}
+const iconesPagamento = { 'Dinheiro': '💵', 'Pix': '📱' };
 
-function setFiltro(data) { filtroData = data; renderTudo(); }
+let filtroData = 'todos';
 
 function renderTudo() {
   const historico = getHistorico();
@@ -308,32 +452,59 @@ function renderTudo() {
   renderHistorico(filtrado);
 }
 
+
 function renderResumoDia() {
-  const historico   = getHistorico();
-  const hoje        = new Date().toLocaleDateString('pt-BR');
-  const vendasHoje  = historico.filter(v => v.data === hoje);
+  const historico = getHistorico();
+  const hoje = new Date().toLocaleDateString('pt-BR');
+  const vendasHoje = historico.filter(v => v.data === hoje);
+
+  const el = document.getElementById('resumo-dia-container');
+
   const faturamento = vendasHoje.reduce((s, v) => s + v.total, 0);
   const totalItens  = vendasHoje.reduce((s, v) => s + v.itens.reduce((ss, i) => ss + i.qtd, 0), 0);
   const ticketMedio = vendasHoje.length > 0 ? faturamento / vendasHoje.length : 0;
 
+  // Item mais vendido hoje
   const contagem = {};
-  vendasHoje.forEach(v => v.itens.forEach(i => { contagem[i.nome] = (contagem[i.nome] || 0) + i.qtd; }));
+  vendasHoje.forEach(v => v.itens.forEach(i => {
+    contagem[i.nome] = (contagem[i.nome] || 0) + i.qtd;
+  }));
   const maisVendido = Object.entries(contagem).sort((a, b) => b[1] - a[1])[0];
 
-  document.getElementById('resumo-dia-container').innerHTML = `
+  el.innerHTML = `
     <div class="resumo-dia">
-      <div class="resumo-dia-titulo"><span>Resumo de hoje</span>${hoje}</div>
+      <div class="resumo-dia-titulo">
+        <span>Resumo de hoje</span>
+        ${hoje}
+      </div>
       ${vendasHoje.length === 0
         ? '<div class="resumo-dia-vazio">Nenhuma venda registrada hoje ainda.</div>'
         : `<div class="resumo-dia-stats">
-            <div class="dia-stat"><div class="dia-stat-label">Faturamento</div><div class="dia-stat-valor destaque">R$ ${faturamento.toFixed(2).replace('.', ',')}</div></div>
-            <div class="dia-stat"><div class="dia-stat-label">Vendas</div><div class="dia-stat-valor">${vendasHoje.length}</div></div>
-            <div class="dia-stat"><div class="dia-stat-label">Itens</div><div class="dia-stat-valor">${totalItens}</div></div>
-            <div class="dia-stat"><div class="dia-stat-label">Ticket Médio</div><div class="dia-stat-valor">R$ ${ticketMedio.toFixed(2).replace('.', ',')}</div></div>
-            ${maisVendido ? `<div class="dia-stat"><div class="dia-stat-label">🏆 Mais Vendido</div><div class="dia-stat-valor" style="font-size:0.9rem;max-width:140px;line-height:1.3">${maisVendido[0]}</div></div>` : ''}
+            <div class="dia-stat">
+              <div class="dia-stat-label">Faturamento</div>
+              <div class="dia-stat-valor destaque">R$ ${faturamento.toFixed(2).replace('.', ',')}</div>
+            </div>
+            <div class="dia-stat">
+              <div class="dia-stat-label">Vendas</div>
+              <div class="dia-stat-valor">${vendasHoje.length}</div>
+            </div>
+            <div class="dia-stat">
+              <div class="dia-stat-label">Itens</div>
+              <div class="dia-stat-valor">${totalItens}</div>
+            </div>
+            <div class="dia-stat">
+              <div class="dia-stat-label">Ticket Médio</div>
+              <div class="dia-stat-valor">R$ ${ticketMedio.toFixed(2).replace('.', ',')}</div>
+            </div>
+            ${maisVendido ? `
+            <div class="dia-stat">
+              <div class="dia-stat-label">🏆 Mais Vendido</div>
+              <div class="dia-stat-valor" style="font-size:0.9rem; max-width:140px; line-height:1.3">${maisVendido[0]}</div>
+            </div>` : ''}
           </div>`
       }
-    </div>`;
+    </div>
+  `;
 }
 
 function renderCardsResumo(vendas) {
@@ -341,11 +512,13 @@ function renderCardsResumo(vendas) {
   const totalFaturado = vendas.reduce((s, v) => s + v.total, 0);
   const totalItens    = vendas.reduce((s, v) => s + v.itens.reduce((ss, i) => ss + i.qtd, 0), 0);
   const ticketMedio   = totalVendas > 0 ? totalFaturado / totalVendas : 0;
+
   document.getElementById('cards-resumo').innerHTML = `
     <div class="card-resumo"><div class="cr-icon">🛍️</div><div class="cr-label">Total de Vendas</div><div class="cr-valor">${totalVendas}</div></div>
     <div class="card-resumo"><div class="cr-icon">💰</div><div class="cr-label">Faturamento Total</div><div class="cr-valor">R$ ${totalFaturado.toFixed(2).replace('.', ',')}</div></div>
     <div class="card-resumo"><div class="cr-icon">🧁</div><div class="cr-label">Itens Vendidos</div><div class="cr-valor">${totalItens}</div></div>
-    <div class="card-resumo"><div class="cr-icon">📊</div><div class="cr-label">Ticket Médio</div><div class="cr-valor">R$ ${ticketMedio.toFixed(2).replace('.', ',')}</div></div>`;
+    <div class="card-resumo"><div class="cr-icon">📊</div><div class="cr-label">Ticket Médio</div><div class="cr-valor">R$ ${ticketMedio.toFixed(2).replace('.', ',')}</div></div>
+  `;
 }
 
 function renderRanking(vendas) {
@@ -355,10 +528,13 @@ function renderRanking(vendas) {
     contagem[i.nome].qtd   += i.qtd;
     contagem[i.nome].total += i.preco * i.qtd;
   }));
+
   const sorted = Object.entries(contagem).sort((a, b) => b[1].qtd - a[1].qtd);
   const maxQtd = sorted[0]?.[1]?.qtd || 1;
   const el = document.getElementById('ranking-lista');
-  if (!sorted.length) { el.innerHTML = '<div class="vazio-msg">Nenhuma venda registrada ainda.</div>'; return; }
+
+  if (sorted.length === 0) { el.innerHTML = '<div class="vazio-msg">Nenhuma venda registrada ainda.</div>'; return; }
+
   el.innerHTML = sorted.map(([nome, dados], idx) => {
     const posClass = idx === 0 ? 'top1' : idx === 1 ? 'top2' : idx === 2 ? 'top3' : '';
     const largura  = Math.round((dados.qtd / maxQtd) * 100);
@@ -380,8 +556,10 @@ function renderPagamentos(vendas) {
     formas[v.formaPagamento].qtd++;
     formas[v.formaPagamento].total += v.total;
   });
+
   const el = document.getElementById('pagamentos-grid');
-  if (!Object.keys(formas).length) { el.innerHTML = '<div class="vazio-msg">Nenhuma venda ainda.</div>'; return; }
+  if (Object.keys(formas).length === 0) { el.innerHTML = '<div class="vazio-msg">Nenhuma venda ainda.</div>'; return; }
+
   el.innerHTML = Object.entries(formas).map(([forma, dados]) => `
     <div class="pagamento-card">
       <div class="pg-icon">${iconesPagamento[forma] || '💰'}</div>
@@ -399,14 +577,22 @@ function renderFiltros(historico) {
   ].join('');
 }
 
+function setFiltro(data) { filtroData = data; renderTudo(); }
+
+function filtrarPorData(historico, filtro) {
+  return filtro === 'todos' ? historico : historico.filter(v => v.data === filtro);
+}
+
 function renderHistorico(vendas) {
   const el = document.getElementById('historico-lista');
-  if (!vendas.length) { el.innerHTML = '<div class="vazio-msg">Nenhuma venda encontrada.</div>'; return; }
+  if (vendas.length === 0) { el.innerHTML = '<div class="vazio-msg">Nenhuma venda encontrada.</div>'; return; }
+
   el.innerHTML = [...vendas].reverse().map(v => {
     const itensTexto = v.itens.map(i => `${i.qtd}x ${i.nome} — R$ ${(i.preco * i.qtd).toFixed(2).replace('.', ',')}`).join('<br>');
-    const extra = (v.formaPagamento === 'Dinheiro' && v.recebido != null)
-      ? `<br>Recebido: R$ ${v.recebido.toFixed(2).replace('.', ',')} &nbsp;|&nbsp; Troco: R$ ${v.troco.toFixed(2).replace('.', ',')}`
-      : '';
+    let extra = '';
+    if (v.formaPagamento === 'Dinheiro' && v.recebido != null) {
+      extra = `<br>Recebido: R$ ${v.recebido.toFixed(2).replace('.', ',')} &nbsp;|&nbsp; Troco: R$ ${v.troco.toFixed(2).replace('.', ',')}`;
+    }
     return `
       <div class="venda-card">
         <div class="venda-header" onclick="toggleVenda(${v.id})">
