@@ -1,8 +1,9 @@
 // =====================
 //  SERVICE WORKER — Docelar PDV
-//  Atualize CACHE_NAME ao mudar arquivos
+//  Versão do cache — atualize quando mudar os arquivos
 // =====================
-const CACHE_NAME = 'docelar-v2';
+const CACHE_NAME = 'docelar-v1';
+
 const ARQUIVOS = [
   '/docelar-sistema_pdv/index.html',
   '/docelar-sistema_pdv/relatorio.html',
@@ -15,6 +16,7 @@ const ARQUIVOS = [
   'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'
 ];
 
+// Instala e faz cache de todos os arquivos
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ARQUIVOS))
@@ -22,6 +24,7 @@ self.addEventListener('install', e => {
   self.skipWaiting();
 });
 
+// Limpa caches antigos ao ativar nova versão
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys =>
@@ -31,17 +34,20 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
+// Serve do cache, tenta rede se não encontrar
 self.addEventListener('fetch', e => {
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;
       return fetch(e.request).then(response => {
+        // Cacheia recursos novos dinamicamente
         if (response && response.status === 200) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
         }
         return response;
       }).catch(() => {
+        // Offline e não tem no cache — retorna index.html como fallback
         if (e.request.destination === 'document') {
           return caches.match('/docelar-sistema_pdv/index.html');
         }
