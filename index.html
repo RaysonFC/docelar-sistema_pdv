@@ -6,6 +6,7 @@
   <title>Docelar — Sistema de Caixa</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -100,12 +101,41 @@
       <!-- PAGAMENTO -->
       <div class="pagamento-section">
         <div class="pagamento-titulo">💳 Forma de pagamento</div>
-        <div class="formas-grid">
+        <div class="formas-grid formas-grid-2">
           <button class="forma-btn" onclick="selecionarPagamento(this, 'Dinheiro')">💵 Dinheiro</button>
           <button class="forma-btn" onclick="selecionarPagamento(this, 'Pix')">📱 Pix</button>
-          <button class="forma-btn" onclick="selecionarPagamento(this, 'Débito')">💳 Débito</button>
-          <button class="forma-btn" onclick="selecionarPagamento(this, 'Crédito')">💳 Crédito</button>
         </div>
+        <!-- PIX -->
+        <div id="pix-section" style="display:none">
+          <div class="pix-box">
+
+            <!-- QR + Timer -->
+            <div id="pix-box-inner">
+              <div class="pix-titulo">📱 Escaneie o QR Code Pix</div>
+              <div id="qrcode-container" class="qrcode-wrap"></div>
+              <div class="pix-valor-label">Cobrança de <strong id="pix-valor">R$ 0,00</strong></div>
+
+              <div class="pix-aguardando">
+                <span class="pix-pulso"></span>
+                <span>Aguardando pagamento</span>
+                <span class="pix-timer-val" id="pix-timer">00:00</span>
+              </div>
+
+              <button class="btn-confirmar-pix" onclick="confirmarPagamentoPix()">
+                ✓ Pagamento recebido
+              </button>
+            </div>
+
+            <!-- Tela de confirmação -->
+            <div id="pix-confirmado" class="pix-confirmado-box" style="display:none">
+              <div class="pix-check">✓</div>
+              <div class="pix-confirmado-titulo">Pagamento confirmado!</div>
+              <div class="pix-confirmado-sub">Finalizando venda...</div>
+            </div>
+
+          </div>
+        </div>
+
         <div id="troco-section" style="display:none">
           <div class="input-label">Valor recebido (R$)</div>
           <input type="number" class="input-valor" id="valor-recebido" placeholder="0,00" step="0.01" oninput="calcularTroco()">
