@@ -14,19 +14,19 @@ const cardapio = {
     { nome: 'Bolo no Pote Ninho c/ Geleia de Morango', preco: 15 },
   ],
   brownie: [
-    { nome: 'Brownie Clássico', preco:  7 },
+    { nome: 'Brownie Clássico', preco: 7  },
     { nome: 'Brownie Especial', preco: 10 },
     { nome: 'Brownie Supremo',  preco: 15 },
-  ]
+  ],
 };
 
 // =====================
 //  ESTADO
 // =====================
 let pedido         = JSON.parse(localStorage.getItem('pedido_atual')) || [];
-let formaPagamento = localStorage.getItem('forma_pagamento') || '';
-let desconto       = parseFloat(localStorage.getItem('desconto'))    || 0;
-let tipoDesconto   = localStorage.getItem('tipo_desconto')           || 'reais';
+let formaPagamento = localStorage.getItem('forma_pagamento')          || '';
+let desconto       = parseFloat(localStorage.getItem('desconto'))     || 0;
+let tipoDesconto   = localStorage.getItem('tipo_desconto')            || 'reais';
 
 // =====================
 //  LOCALSTORAGE
@@ -53,14 +53,28 @@ function renderCardapio() {
   renderGrupo('grid-brownie', cardapio.brownie);
 }
 
+function renderGrupo(gridId, itens) {
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = itens.map(item => {
+    const noCarrinho = pedido.find(p => p.nome === item.nome);
+    const qtd = noCarrinho ? noCarrinho.qtd : 0;
+    return `
+      <button class="item-btn ${qtd > 0 ? 'item-no-carrinho' : ''}"
+              onclick='adicionarItem(${JSON.stringify(item)}, this)'
+              data-nome="${item.nome}">
+        ${qtd > 0 ? `<div class="item-qtd-badge">${qtd}</div>` : ''}
+        <div class="item-nome">${item.nome}</div>
+        <div class="item-preco">R$ ${item.preco.toFixed(2).replace('.', ',')}</div>
+      </button>
+    `;
+  }).join('');
+}
+
 function atualizarBadgesCardapio() {
   document.querySelectorAll('.item-btn[data-nome]').forEach(btn => {
-    const nome       = btn.dataset.nome;
-    const noCarrinho = pedido.find(p => p.nome === nome);
-    const qtd        = noCarrinho ? noCarrinho.qtd : 0;
-
+    const noCarrinho = pedido.find(p => p.nome === btn.dataset.nome);
+    const qtd = noCarrinho ? noCarrinho.qtd : 0;
     btn.classList.toggle('item-no-carrinho', qtd > 0);
-
     let badge = btn.querySelector('.item-qtd-badge');
     if (qtd > 0) {
       if (!badge) {
@@ -75,24 +89,6 @@ function atualizarBadgesCardapio() {
   });
 }
 
-function renderGrupo(gridId, itens) {
-  const grid = document.getElementById(gridId);
-  grid.innerHTML = itens.map(item => {
-    const noCarrinho    = pedido.find(p => p.nome === item.nome);
-    const qtd           = noCarrinho ? noCarrinho.qtd : 0;
-    const temNoCarrinho = qtd > 0;
-    return `
-      <button class="item-btn ${temNoCarrinho ? 'item-no-carrinho' : ''}"
-              onclick='adicionarItem(${JSON.stringify(item)}, this)'
-              data-nome="${item.nome}">
-        ${temNoCarrinho ? `<div class="item-qtd-badge">${qtd}</div>` : ''}
-        <div class="item-nome">${item.nome}</div>
-        <div class="item-preco">R$ ${item.preco.toFixed(2).replace('.', ',')}</div>
-      </button>
-    `;
-  }).join('');
-}
-
 // =====================
 //  PEDIDO
 // =====================
@@ -102,7 +98,6 @@ function adicionarItem(item, btn) {
   else pedido.push({ ...item, qtd: 1 });
   salvarEstado();
   renderPedido();
-  atualizarBadgesCardapio();
   if (btn && window.innerWidth <= 768) feedbackAdicionado(btn);
 }
 
@@ -113,8 +108,8 @@ function feedbackAdicionado(btn) {
   const precoEl       = btn.querySelector('.item-preco');
   const textoOriginal = nomeEl.textContent;
   btn.classList.add('item-adicionado');
-  nomeEl.textContent        = '✓ Adicionado!';
-  precoEl.style.visibility  = 'hidden';
+  nomeEl.textContent       = '✓ Adicionado!';
+  precoEl.style.visibility = 'hidden';
   setTimeout(() => {
     btn.classList.remove('item-adicionado');
     nomeEl.textContent       = textoOriginal;
@@ -128,7 +123,6 @@ function alterarQtd(idx, delta) {
   if (pedido[idx].qtd <= 0) pedido.splice(idx, 1);
   salvarEstado();
   renderPedido();
-  atualizarBadgesCardapio();
 }
 
 function renderPedido() {
@@ -136,11 +130,11 @@ function renderPedido() {
   const badge = document.getElementById('badge-qtd');
 
   if (pedido.length === 0) {
-    lista.innerHTML    = '<div class="pedido-vazio">Nenhum item adicionado ainda...</div>';
+    lista.innerHTML     = '<div class="pedido-vazio">Nenhum item adicionado ainda...</div>';
     badge.style.display = 'none';
     atualizarResumo();
     atualizarBotao();
-    atualizarBadgeTab();
+    atualizarBadgesCardapio();
     return;
   }
 
@@ -159,25 +153,14 @@ function renderPedido() {
     </div>
   `).join('');
 
-  const totalItens        = pedido.reduce((s, i) => s + i.qtd, 0);
-  badge.textContent       = totalItens;
-  badge.style.display     = 'inline';
+  const totalItens    = pedido.reduce((s, i) => s + i.qtd, 0);
+  badge.textContent   = totalItens;
+  badge.style.display = 'inline';
 
   atualizarResumo();
   atualizarBotao();
-  atualizarBadgeTab();
   calcularTroco();
-}
-
-// =====================
-//  BADGE DA TAB MOBILE
-// =====================
-function atualizarBadgeTab() {
-  const total = pedido.reduce((s, i) => s + i.qtd, 0);
-  const badge = document.getElementById('badge-tab');
-  if (!badge) return;
-  badge.textContent   = total;
-  badge.style.display = total > 0 ? 'inline' : 'none';
+  atualizarBadgesCardapio();
 }
 
 // =====================
@@ -209,10 +192,8 @@ function alterarTipoDesconto(tipo) {
 function aplicarDesconto() {
   const val      = parseFloat(document.getElementById('input-desconto').value) || 0;
   const subtotal = pedido.reduce((s, i) => s + i.preco * i.qtd, 0);
-
-  if (tipoDesconto === 'porcento' && val > 100) { alert('Desconto não pode ser maior que 100%!'); return; }
+  if (tipoDesconto === 'porcento' && val > 100)     { alert('Desconto não pode ser maior que 100%!');    return; }
   if (tipoDesconto === 'reais'    && val > subtotal) { alert('Desconto não pode ser maior que o total!'); return; }
-
   desconto = val;
   salvarEstado();
   atualizarResumo();
@@ -234,6 +215,7 @@ function atualizarResumo() {
   const total      = Math.max(0, subtotal - valorDesc);
 
   document.getElementById('res-itens').textContent = totalItens;
+  document.getElementById('res-total').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
 
   const linhaSubtotal = document.getElementById('res-subtotal-linha');
   const linhaDesconto = document.getElementById('res-desconto-linha');
@@ -247,8 +229,6 @@ function atualizarResumo() {
     linhaSubtotal.style.display = 'none';
     linhaDesconto.style.display = 'none';
   }
-
-  document.getElementById('res-total').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
 }
 
 function atualizarBotao() {
@@ -266,18 +246,33 @@ function selecionarPagamento(el, forma) {
   document.querySelectorAll('.forma-btn').forEach(b => b.classList.remove('ativo'));
   el.classList.add('ativo');
   formaPagamento = forma;
-
   document.getElementById('troco-section').style.display = forma === 'Dinheiro' ? 'block' : 'none';
   document.getElementById('pix-section').style.display   = forma === 'Pix'      ? 'block' : 'none';
-
   if (forma === 'Pix') { gerarQRCode(); iniciarTimerPix(); }
-  else                 { pararTimerPix(); }
-
+  else pararTimerPix();
   salvarEstado();
   atualizarBotao();
   calcularTroco();
 }
 
+function calcularTroco() {
+  const total    = totalComDesconto();
+  const recebido = parseFloat(document.getElementById('valor-recebido').value) || 0;
+  const trocoEl  = document.getElementById('troco-valor');
+  if (formaPagamento === 'Dinheiro' && recebido > 0) {
+    const troco = recebido - total;
+    trocoEl.textContent = troco >= 0
+      ? `Troco: R$ ${troco.toFixed(2).replace('.', ',')}`
+      : `⚠️ Valor insuficiente (faltam R$ ${Math.abs(troco).toFixed(2).replace('.', ',')})`;
+    trocoEl.style.color = troco >= 0 ? '#3d1f1f' : '#c0392b';
+  } else {
+    trocoEl.textContent = '';
+  }
+}
+
+// =====================
+//  PIX — TIMER
+// =====================
 function iniciarTimerPix() {
   pararTimerPix();
   pixSegundos = 0;
@@ -309,11 +304,11 @@ function confirmarPagamentoPix() {
   pararTimerPix();
   document.getElementById('pix-box-inner').style.display  = 'none';
   document.getElementById('pix-confirmado').style.display = 'flex';
-  setTimeout(finalizarVenda, 1500);
+  setTimeout(() => finalizarVenda(), 1500);
 }
 
 // =====================
-//  PIX — PAYLOAD EMV / QR CODE
+//  PIX — PAYLOAD BACEN EMV
 // =====================
 const PIX_CHAVE  = 'd4ddbe3f-a297-4cef-8589-33a3c5f077e9';
 const PIX_NOME   = 'Rayson Ferreira Cruz';
@@ -327,16 +322,17 @@ function crc16(str) {
   let crc = 0xFFFF;
   for (let i = 0; i < str.length; i++) {
     crc ^= str.charCodeAt(i) << 8;
-    for (let j = 0; j < 8; j++) crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : crc << 1;
+    for (let j = 0; j < 8; j++) {
+      crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : crc << 1;
+    }
   }
   return (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
 }
 
 function gerarPayloadPix(valor) {
-  const nome    = PIX_NOME.substring(0, 25).toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  const cidade  = PIX_CIDADE.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-
-  let payload =
+  const nome   = PIX_NOME.substring(0, 25).toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const cidade = PIX_CIDADE.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  let payload  =
     pixField('00', '01') +
     pixField('26', pixField('00', 'BR.GOV.BCB.PIX') + pixField('01', PIX_CHAVE)) +
     pixField('52', '0000') +
@@ -347,40 +343,24 @@ function gerarPayloadPix(valor) {
     pixField('60', cidade) +
     pixField('62', pixField('05', '***')) +
     '6304';
-
   return payload + crc16(payload);
 }
 
 function gerarQRCode() {
   const container = document.getElementById('qrcode-container');
+  if (!container) return;
   container.innerHTML = '';
   const total = totalComDesconto();
-
   new QRCode(container, {
-    text: gerarPayloadPix(total),
-    width: 200, height: 200,
-    colorDark: '#3d1f1f', colorLight: '#fff5f0',
-    correctLevel: QRCode.CorrectLevel.M
+    text:           gerarPayloadPix(total),
+    width:          200,
+    height:         200,
+    colorDark:      '#3d1f1f',
+    colorLight:     '#fff5f0',
+    correctLevel:   QRCode.CorrectLevel.M,
   });
-
   const valorEl = document.getElementById('pix-valor');
   if (valorEl) valorEl.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
-}
-
-function calcularTroco() {
-  const total    = totalComDesconto();
-  const recebido = parseFloat(document.getElementById('valor-recebido').value) || 0;
-  const trocoEl  = document.getElementById('troco-valor');
-
-  if (formaPagamento === 'Dinheiro' && recebido > 0) {
-    const troco         = recebido - total;
-    trocoEl.textContent = troco >= 0
-      ? `Troco: R$ ${troco.toFixed(2).replace('.', ',')}`
-      : `⚠️ Valor insuficiente (faltam R$ ${Math.abs(troco).toFixed(2).replace('.', ',')})`;
-    trocoEl.style.color = troco >= 0 ? '#3d1f1f' : '#c0392b';
-  } else {
-    trocoEl.textContent = '';
-  }
 }
 
 // =====================
@@ -398,30 +378,35 @@ function finalizarVenda() {
   }
 
   const agora = new Date();
-  const hora  = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  const data  = agora.toLocaleDateString('pt-BR');
-
   const venda = {
-    id: Date.now(), data, hora,
-    itens: pedido.map(i => ({ nome: i.nome, preco: i.preco, qtd: i.qtd })),
-    subtotal, desconto: valorDesc, total, formaPagamento,
-    recebido: formaPagamento === 'Dinheiro' ? recebido : null,
-    troco:    formaPagamento === 'Dinheiro' ? recebido - total : null,
+    id:            Date.now(),
+    data:          agora.toLocaleDateString('pt-BR'),
+    hora:          agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+    itens:         pedido.map(i => ({ nome: i.nome, preco: i.preco, qtd: i.qtd })),
+    subtotal,
+    desconto:      valorDesc,
+    total,
+    formaPagamento,
+    recebido:      formaPagamento === 'Dinheiro' ? recebido       : null,
+    troco:         formaPagamento === 'Dinheiro' ? recebido - total : null,
   };
 
   salvarVenda(venda);
 
-  const linhas        = pedido.map(i => `<strong>${i.qtd}x ${i.nome}</strong> — R$ ${(i.preco * i.qtd).toFixed(2).replace('.', ',')}`).join('<br>');
-  const descontoTexto = valorDesc > 0 ? `<br>Desconto: − R$ ${valorDesc.toFixed(2).replace('.', ',')}` : '';
-  const extra         = formaPagamento === 'Dinheiro'
+  const linhas = pedido.map(i =>
+    `<strong>${i.qtd}x ${i.nome}</strong> — R$ ${(i.preco * i.qtd).toFixed(2).replace('.', ',')}`
+  ).join('<br>');
+
+  const descontoTexto  = valorDesc > 0 ? `<br>Desconto: − R$ ${valorDesc.toFixed(2).replace('.', ',')}` : '';
+  const extraDinheiro  = formaPagamento === 'Dinheiro'
     ? `<br>Recebido: R$ ${recebido.toFixed(2).replace('.', ',')}<br>Troco: R$ ${(recebido - total).toFixed(2).replace('.', ',')}`
     : '';
 
   document.getElementById('cupom-conteudo').innerHTML = `
-    📅 ${data} às ${hora}<br><br>
+    📅 ${venda.data} às ${venda.hora}<br><br>
     ${linhas}${descontoTexto}<br><br>
     <strong>Forma de pagamento: ${formaPagamento}</strong><br>
-    <strong>Total: R$ ${total.toFixed(2).replace('.', ',')}</strong>${extra}
+    <strong>Total: R$ ${total.toFixed(2).replace('.', ',')}</strong>${extraDinheiro}
   `;
 
   document.getElementById('modal-overlay').classList.add('show');
@@ -437,7 +422,10 @@ function novaVenda() {
 }
 
 function limparPedido() {
-  pedido = []; formaPagamento = ''; desconto = 0; tipoDesconto = 'reais';
+  pedido         = [];
+  formaPagamento = '';
+  desconto       = 0;
+  tipoDesconto   = 'reais';
   localStorage.removeItem('pedido_atual');
   localStorage.removeItem('forma_pagamento');
   localStorage.removeItem('desconto');
@@ -445,74 +433,29 @@ function limparPedido() {
   document.querySelectorAll('.forma-btn').forEach(b => b.classList.remove('ativo'));
   document.getElementById('troco-section').style.display = 'none';
   document.getElementById('pix-section').style.display   = 'none';
-  document.getElementById('valor-recebido').value         = '';
-  document.getElementById('input-desconto').value         = '';
+  document.getElementById('valor-recebido').value        = '';
+  document.getElementById('input-desconto').value        = '';
   pararTimerPix();
   alterarTipoDesconto('reais');
   renderPedido();
 }
 
 // =====================
-//  TABS MOBILE
-// =====================
-function mostrarTab(tab) {
-  const cardapio = document.getElementById('secao-cardapio');
-  const caixa    = document.getElementById('secao-caixa');
-  const btnC     = document.getElementById('tab-cardapio');
-  const btnP     = document.getElementById('tab-caixa');
-  if (tab === 'cardapio') {
-    cardapio.classList.remove('oculto'); caixa.classList.add('oculto');
-    btnC.classList.add('ativo');         btnP.classList.remove('ativo');
-  } else {
-    caixa.classList.remove('oculto');    cardapio.classList.add('oculto');
-    btnP.classList.add('ativo');         btnC.classList.remove('ativo');
-  }
-}
-
-function ajustarLayout() {
-  const cardapio = document.getElementById('secao-cardapio');
-  const caixa    = document.getElementById('secao-caixa');
-  if (window.innerWidth > 768) {
-    cardapio.classList.remove('oculto');
-    caixa.classList.remove('oculto');
-  } else {
-    const tabAtiva = document.querySelector('.tab-btn.ativo')?.id;
-    tabAtiva === 'tab-caixa' ? mostrarTab('caixa') : mostrarTab('cardapio');
-  }
-}
-
-window.addEventListener('resize', ajustarLayout);
-
-// =====================
 //  INIT
 // =====================
 renderCardapio();
 renderPedido();
-ajustarLayout();
-atualizarBadgeTab();
 
-// Restaurar forma de pagamento
 if (formaPagamento) {
   document.querySelectorAll('.forma-btn').forEach(b => {
     if (b.getAttribute('onclick')?.includes(formaPagamento)) b.classList.add('ativo');
   });
   if (formaPagamento === 'Dinheiro') document.getElementById('troco-section').style.display = 'block';
-  if (formaPagamento === 'Pix')      document.getElementById('pix-section').style.display   = 'block';
   atualizarBotao();
 }
 
-// Restaurar desconto salvo
 if (desconto > 0) {
   document.getElementById('input-desconto').value = desconto;
   alterarTipoDesconto(tipoDesconto);
   atualizarResumo();
-}
-
-// Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/docelar-sistema_pdv/sw.js')
-      .then(() => console.log('✅ Service Worker registrado'))
-      .catch(err => console.log('❌ SW erro:', err));
-  });
 }
