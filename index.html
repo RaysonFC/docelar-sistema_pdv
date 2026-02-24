@@ -7,6 +7,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#3d1f1f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Docelar">
+  <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
 
@@ -213,5 +219,14 @@
   ajustarLayout();
   atualizarBadgeTab();
 </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/docelar-sistema_pdv/sw.js')
+          .then(() => console.log('✅ Service Worker registrado'))
+          .catch(err => console.log('❌ SW erro:', err));
+      });
+    }
+  </script>
 </body>
 </html>
