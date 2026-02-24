@@ -356,6 +356,15 @@ header span {
 .pagamento-titulo  { font-weight: 700; font-size: 0.85rem; color: var(--marrom); margin-bottom: 8px; }
 .formas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
 
+/* Apenas 2 formas: botões mais largos e destacados */
+.formas-grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+.formas-grid-2 .forma-btn {
+  padding: 14px 8px;
+  font-size: 0.92rem;
+}
+
 .forma-btn {
   padding: 8px;
   border: 2px solid rgba(244,167,185,0.4);
@@ -517,6 +526,185 @@ header span {
   display: none;
   transition: transform 0.2s;
 }
+
+
+
+/* ========================
+   BADGE QUANTIDADE NO CARDÁPIO
+   ======================== */
+.item-btn {
+  position: relative; /* necessário para posicionar o badge */
+}
+
+.item-qtd-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--marrom);
+  color: var(--rosa);
+  font-size: 0.72rem;
+  font-weight: 800;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  animation: popBadge 0.2s ease;
+  z-index: 2;
+}
+
+@keyframes popBadge {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+
+/* Item que já está no carrinho fica levemente destacado */
+.item-no-carrinho {
+  border-color: var(--rosa-escuro) !important;
+  background: white !important;
+}
+
+.item-no-carrinho .item-preco {
+  background: var(--rosa-escuro);
+}
+
+/* ========================
+   PIX / QR CODE
+   ======================== */
+.pix-box {
+  margin-bottom: 12px;
+  background: var(--creme2);
+  border: 2px solid rgba(244,167,185,0.4);
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.pix-titulo {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--marrom);
+  margin-bottom: 12px;
+}
+
+.qrcode-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.qrcode-wrap canvas,
+.qrcode-wrap img {
+  border-radius: 10px;
+  border: 3px solid var(--marrom);
+  padding: 6px;
+  background: var(--creme);
+}
+
+.pix-valor-label {
+  font-size: 0.85rem;
+  color: var(--marrom-medio);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.pix-valor-label strong {
+  color: var(--marrom);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+/* Linha aguardando pagamento */
+.pix-aguardando {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--marrom-medio);
+}
+
+.pix-pulso {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #27ae60;
+  display: inline-block;
+  flex-shrink: 0;
+  animation: pulsar 1.2s ease-in-out infinite;
+}
+
+@keyframes pulsar {
+  0%, 100% { transform: scale(1);   opacity: 1; }
+  50%       { transform: scale(1.6); opacity: 0.4; }
+}
+
+.pix-timer-val {
+  background: var(--marrom);
+  color: var(--rosa);
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+}
+
+/* Botão confirmar pagamento */
+.btn-confirmar-pix {
+  width: 100%;
+  padding: 13px;
+  background: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+.btn-confirmar-pix:hover  { background: #219150; transform: translateY(-1px); }
+.btn-confirmar-pix:active { transform: scale(0.98); }
+
+/* Tela de confirmação verde */
+.pix-confirmado-box {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+  gap: 10px;
+  animation: fadeIn 0.3s ease;
+}
+
+.pix-check {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: #27ae60;
+  color: white;
+  font-size: 1.8rem;
+  display: flex; align-items: center; justify-content: center;
+  animation: popBadge 0.4s ease;
+  box-shadow: 0 4px 20px rgba(39,174,96,0.35);
+  margin-bottom: 4px;
+}
+
+.pix-confirmado-titulo {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #27ae60;
+}
+
+.pix-confirmado-sub {
+  font-size: 0.82rem;
+  color: var(--marrom-medio);
+  font-weight: 600;
+}
+
 
 /* ========================
    MOBILE  (≤ 768px)
