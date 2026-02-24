@@ -53,14 +53,46 @@ function renderCardapio() {
   renderGrupo('grid-brownie', cardapio.brownie);
 }
 
+function atualizarBadgesCardapio() {
+  document.querySelectorAll('.item-btn[data-nome]').forEach(btn => {
+    const nome = btn.dataset.nome;
+    const noCarrinho = pedido.find(p => p.nome === nome);
+    const qtd = noCarrinho ? noCarrinho.qtd : 0;
+
+    // Atualizar classe
+    btn.classList.toggle('item-no-carrinho', qtd > 0);
+
+    // Atualizar ou criar badge
+    let badge = btn.querySelector('.item-qtd-badge');
+    if (qtd > 0) {
+      if (!badge) {
+        badge = document.createElement('div');
+        badge.className = 'item-qtd-badge';
+        btn.insertBefore(badge, btn.firstChild);
+      }
+      badge.textContent = qtd;
+    } else {
+      if (badge) badge.remove();
+    }
+  });
+}
+
 function renderGrupo(gridId, itens) {
   const grid = document.getElementById(gridId);
-  grid.innerHTML = itens.map(item => `
-    <button class="item-btn" onclick='adicionarItem(${JSON.stringify(item)}, this)'>
-      <div class="item-nome">${item.nome}</div>
-      <div class="item-preco">R$ ${item.preco.toFixed(2).replace('.', ',')}</div>
-    </button>
-  `).join('');
+  grid.innerHTML = itens.map(item => {
+    const noCarrinho = pedido.find(p => p.nome === item.nome);
+    const qtd = noCarrinho ? noCarrinho.qtd : 0;
+    const temNoCarrinho = qtd > 0;
+    return `
+      <button class="item-btn ${temNoCarrinho ? 'item-no-carrinho' : ''}"
+              onclick='adicionarItem(${JSON.stringify(item)}, this)'
+              data-nome="${item.nome}">
+        ${temNoCarrinho ? `<div class="item-qtd-badge">${qtd}</div>` : ''}
+        <div class="item-nome">${item.nome}</div>
+        <div class="item-preco">R$ ${item.preco.toFixed(2).replace('.', ',')}</div>
+      </button>
+    `;
+  }).join('');
 }
 
 // =====================
@@ -217,20 +249,149 @@ function atualizarResumo() {
 
 function atualizarBotao() {
   document.getElementById('btn-finalizar').disabled = pedido.length === 0 || !formaPagamento;
+  // Atualiza QR Code se Pix estiver selecionado
+  if (formaPagamento === 'Pix') gerarQRCode();
 }
 
 // =====================
 //  PAGAMENTO
 // =====================
+let pixTimer = null;
+let pixSegundos = 0;
+
 function selecionarPagamento(el, forma) {
   document.querySelectorAll('.forma-btn').forEach(b => b.classList.remove('ativo'));
   el.classList.add('ativo');
   formaPagamento = forma;
   document.getElementById('troco-section').style.display = forma === 'Dinheiro' ? 'block' : 'none';
+  document.getElementById('pix-section').style.display   = forma === 'Pix'      ? 'block' : 'none';
+
+  if (forma === 'Pix') {
+    gerarQRCode();
+    iniciarTimerPix();
+  } else {
+    pararTimerPix();
+  }
+
   salvarEstado();
   atualizarBotao();
   calcularTroco();
 }
+
+function iniciarTimerPix() {
+  pararTimerPix();
+  pixSegundos = 0;
+  resetarEstadoPix();
+  atualizarTimerDisplay();
+  pixTimer = setInterval(() => {
+    pixSegundos++;
+    atualizarTimerDisplay();
+  }, 1000);
+}
+
+function pararTimerPix() {
+  if (pixTimer) { clearInterval(pixTimer); pixTimer = null; }
+}
+
+function atualizarTimerDisplay() {
+  const el = document.getElementById('pix-timer');
+  if (!el) return;
+  const m = String(Math.floor(pixSegundos / 60)).padStart(2, '0');
+  const s = String(pixSegundos % 60).padStart(2, '0');
+  el.textContent = m + ':' + s;
+}
+
+function resetarEstadoPix() {
+  const box      = document.getElementById('pix-box-inner');
+  const confirma = document.getElementById('pix-confirmado');
+  if (box)      box.style.display      = 'block';
+  if (confirma) confirma.style.display = 'none';
+}
+
+function confirmarPagamentoPix() {
+  pararTimerPix();
+
+  // Mostrar tela de confirmação
+  document.getElementById('pix-box-inner').style.display  = 'none';
+  document.getElementById('pix-confirmado').style.display = 'flex';
+
+  // Finalizar venda automaticamente após 1.5s
+  setTimeout(() => {
+    finalizarVenda();
+  }, 1500);
+}
+
+// =====================
+//  PIX / QR CODE
+// =====================
+// =====================
+//  GERADOR PAYLOAD PIX DINÂMICO (padrão BACEN EMV)
+// =====================
+const PIX_CHAVE = 'd4ddbe3f-a297-4cef-8589-33a3c5f077e9';
+const PIX_NOME  = 'Rayson Ferreira Cruz';
+const PIX_CIDADE = 'SAO PAULO';
+
+function pixField(id, value) {
+  const len = String(value.length).padStart(2, '0');
+  return id + len + value;
+}
+
+function crc16(str) {
+  let crc = 0xFFFF;
+  for (let i = 0; i < str.length; i++) {
+    crc ^= str.charCodeAt(i) << 8;
+    for (let j = 0; j < 8; j++) {
+      crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : crc << 1;
+    }
+  }
+  return ((crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0'));
+}
+
+function gerarPayloadPix(valor) {
+  const chave      = pixField('01', pixField('14', 'BR.GOV.BCB.PIX') + pixField('26', PIX_CHAVE));
+  const merchantName = PIX_NOME.substring(0, 25).toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const cidade       = PIX_CIDADE.toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const txid         = pixField('05', '***');
+
+  const valorStr = valor.toFixed(2);
+
+  let payload =
+    pixField('00', '01') +                          // payload format
+    pixField('26', pixField('00', 'BR.GOV.BCB.PIX') + pixField('01', PIX_CHAVE)) + // merchant account
+    pixField('52', '0000') +                         // merchant category
+    pixField('53', '986') +                          // currency BRL
+    pixField('54', valorStr) +                       // valor
+    pixField('58', 'BR') +                           // country
+    pixField('59', merchantName) +                   // nome
+    pixField('60', cidade) +                         // cidade
+    pixField('62', pixField('05', '***'));            // txid
+
+  payload += '6304';                                 // CRC placeholder
+  payload += crc16(payload);
+
+  return payload;
+}
+
+function gerarQRCode() {
+  const container = document.getElementById('qrcode-container');
+  container.innerHTML = '';
+
+  const total = totalComDesconto();
+  const payload = gerarPayloadPix(total);
+
+  new QRCode(container, {
+    text: payload,
+    width: 200,
+    height: 200,
+    colorDark: '#3d1f1f',
+    colorLight: '#fff5f0',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  const valorEl = document.getElementById('pix-valor');
+  if (valorEl) valorEl.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+}
+
 
 function calcularTroco() {
   const total    = totalComDesconto();
@@ -322,8 +483,10 @@ function limparPedido() {
   localStorage.removeItem('tipo_desconto');
   document.querySelectorAll('.forma-btn').forEach(b => b.classList.remove('ativo'));
   document.getElementById('troco-section').style.display = 'none';
+  document.getElementById('pix-section').style.display   = 'none';
   document.getElementById('valor-recebido').value = '';
   document.getElementById('input-desconto').value = '';
+  pararTimerPix();
   alterarTipoDesconto('reais');
   renderPedido();
 }
